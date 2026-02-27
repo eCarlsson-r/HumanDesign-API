@@ -1,49 +1,136 @@
-using HumanDesign.Domain.Models.Diagram;
+using System.Xml.Linq;
 using HumanDesign.Application.Interfaces;
-using System.Text;
+using HumanDesign.Domain.Models.Diagram;
+using HumanDesign.Infrastructure.Entities.Charts;
 
 namespace HumanDesign.Application.Services.Diagram;
-
-public class SvgDiagramRenderer : IDiagramRenderer
+public class SvgDiagramRenderer(IWebHostEnvironment env) : IDiagramRenderer
 {
-    public Task<string> RenderSvgAsync(HumanDesignDiagramModel model)
+    private readonly IWebHostEnvironment _env = env;
+
+    public async Task<string> RenderSvgAsync(HumanDesignDiagramModel model)
     {
-        var sb = new StringBuilder();
+        var path = Path.Combine(_env.ContentRootPath, "Application/Assets", "bodygraph-template.svg");
 
-        sb.AppendLine("<svg width='500' height='800' xmlns='http://www.w3.org/2000/svg'>");
+        var svgText = await File.ReadAllTextAsync(path);
+        var doc = XDocument.Parse(svgText);
 
-        // Draw centers
-        int y = 50;
+        ColorCenters(doc, model.DefinedCenters);
+        ColorGates(doc, model.ActiveGates);
+        RenderArrows(doc, model.VariableArrows);
 
-        foreach (var center in model.DefinedCenters)
+        return doc.ToString();
+    }
+
+    private static void ColorCenters(XDocument doc, List<CenterDefinition> centers)
+    {
+        foreach (var center in centers)
         {
-            sb.AppendLine($"""
-                <rect x="200" y="{y}" width="100" height="40"
-                      fill="black" stroke="white"/>
-                <text x="250" y="{y + 25}" fill="white"
-                      font-size="12" text-anchor="middle">
-                      {center}
-                </text>
-            """);
+            var element = doc.Descendants()
+                .FirstOrDefault(x => x.Attribute("id")?.ToString() == $"center-{center.CenterName}");
 
-            y += 60;
+            if (element == null) continue;
+
+            string color;
+
+            if (center.Definition == "defined")
+            {
+                color = CenterColorMap.DefinedColors.TryGetValue(center.CenterName, out var c)
+                    ? c
+                    : "#CCCCCC"; // fallback
+            }
+            else
+            {
+                color = CenterColorMap.UndefinedColor;
+            }
+
+            element.SetAttributeValue("fill", color);
+            element.SetAttributeValue("stroke", "#333");
+            element.SetAttributeValue("stroke-width", "2");
+        }
+    }
+
+    private static void ColorGates(XDocument doc, List<PlanetaryActivation> activations)
+    {
+        foreach (var activation in activations)
+        {
+            var id = $"{activation.Type}-{activation.Gate}";
+
+            var channelElement = doc.Descendants()
+                .FirstOrDefault(x => x.Attribute("id")?.ToString() == id);
+
+            channelElement?.SetAttributeValue("fill", activation.Type == "design" ? "#FF0000" : "#000000");
+
+            var gateElement = doc.Descendants()
+                .FirstOrDefault(x => x.Attribute("id")?.ToString() == $"{activation.Gate}");
+
+            gateElement?.SetAttributeValue("fill", "#000000");
         }
 
-        // Draw gate indicators
-        int gx = 20;
-        foreach (var gate in model.ActiveGates)
+        var distinctGate = activations.GroupBy(p => p.Gate).Where(group => group.Count() == 1);
+        foreach (var group in distinctGate)
         {
-            sb.AppendLine($"""
-                <circle cx="{gx}" cy="750" r="8" fill="red"/>
-                <text x="{gx}" y="770" font-size="8"
-                      text-anchor="middle">{gate}</text>
-            """);
+            foreach (var activation in group)
+            {
+                var id = $"{activation.Type}-{activation.Gate}";
 
-            gx += 20;
+                var designElement = doc.Descendants()
+                    .FirstOrDefault(x => x.Attribute("id")?.ToString() == id);
+
+                designElement?.SetAttributeValue("fill", activation.Type == "design" ? "#FF0000" : "#000000");
+
+                var personalityElement = doc.Descendants()
+                    .FirstOrDefault(x => x.Attribute("id")?.ToString() == id);
+
+                personalityElement?.SetAttributeValue("fill", activation.Type == "design" ? "#FF0000" : "#000000");
+            }
         }
+    }
 
-        sb.AppendLine("</svg>");
+    private static void RenderArrows(XDocument doc, VariableSet variables)
+    {
+        SetArrow(doc, "digestion-arrow", variables.DigestionArrow.IsLeft);
+        SetText(doc, "digestion-color", variables.DigestionArrow.Color);
+        SetText(doc, "digestion-tone", variables.DigestionArrow.Tone);
+        
+        SetArrow(doc, "environment-arrow", variables.EnvironmentArrow.IsLeft);
+        SetText(doc, "environment-color", variables.EnvironmentArrow.Color);
+        SetText(doc, "environment-tone", variables.EnvironmentArrow.Tone);
 
-        return Task.FromResult(sb.ToString());
+        SetArrow(doc, "awareness-arrow", variables.AwarenessArrow.IsLeft);
+        SetText(doc, "awareness-color", variables.AwarenessArrow.Color);
+        SetText(doc, "awareness-tone", variables.AwarenessArrow.Tone);
+
+        SetArrow(doc, "perspective-arrow", variables.PerspectiveArrow.IsLeft);
+        SetText(doc, "perspective-color", variables.PerspectiveArrow.Color);
+        SetText(doc, "perspective-tone", variables.PerspectiveArrow.Tone);
+    }
+
+    private static void SetArrow(XDocument doc, string id, bool isLeft)
+    {
+        var element = doc.Descendants()
+            .FirstOrDefault(x => x.Attribute("id")?.ToString() == id);
+
+        if (element == null) return;
+
+        var baseTransform = element.Attribute("transform")?.Value ?? "";
+
+        if (!isLeft)
+        {
+            element.SetAttributeValue(
+                "transform",
+                baseTransform + " rotate(180deg)"
+            );
+        }
+    }
+
+    private static void SetText(XDocument doc, string id, int number)
+    {
+        var element = doc.Descendants()
+            .FirstOrDefault(x => x.Attribute("id")?.ToString() == id);
+
+        if (element == null) return;
+
+        element.SetValue(number);
     }
 }

@@ -13,17 +13,20 @@ public class HumanDesignReportBuilder : IHumanDesignReportBuilder
 {
     private readonly AppDbContext _db;
     private readonly IReferenceDataService _reference;
+    private readonly ITypeInterpretationService _typeResolver;
     private readonly DiagramModelBuilder _diagramBuilder;
     private readonly IDiagramRenderer _renderer;
 
     public HumanDesignReportBuilder(
         AppDbContext db,
         IReferenceDataService reference,
+        ITypeInterpretationService typeResolver,
         DiagramModelBuilder diagramBuilder,
         IDiagramRenderer renderer)
     {
         _db = db;
         _reference = reference;
+        _typeResolver = typeResolver;
         _diagramBuilder = diagramBuilder;
         _renderer = renderer;
     }
@@ -40,7 +43,10 @@ public class HumanDesignReportBuilder : IHumanDesignReportBuilder
         };
 
         report.Type = await _reference.GetTypeAsync(design.Type);
+        report.Strategy = await _typeResolver.GetStrategyAsync(design.Type);
         report.Authority = design.Authority;
+        report.Signature = await _typeResolver.GetSignatureAsync(design.Type);
+        report.NotSelfTheme = await _typeResolver.GetNotSelfThemeAsync(design.Type);
         report.Profile = await _reference.GetProfileAsync(design.Profile);
 
         report.DiagramSvg = await GenerateDiagramAsync(design);

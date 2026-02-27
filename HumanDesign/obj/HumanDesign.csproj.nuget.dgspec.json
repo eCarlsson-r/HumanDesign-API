@@ -49,6 +49,10 @@
               "target": "Package",
               "version": "[2.1.66, )"
             },
+            "GeoTimeZone": {
+              "target": "Package",
+              "version": "[6.1.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.2, )"
@@ -66,6 +70,10 @@
             "MySqlConnector": {
               "target": "Package",
               "version": "[2.5.0, )"
+            },
+            "Nominatim.API": {
+              "target": "Package",
+              "version": "[2.1.0, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",

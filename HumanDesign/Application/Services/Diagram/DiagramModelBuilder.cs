@@ -18,19 +18,18 @@ public class DiagramModelBuilder
         var design = await _db.Designs
             .Include(d => d.Channels)
             .Include(d => d.Activations)
-            .Include(d => d.Centers)
+            .Include(d => d.CenterDefinitions)
             .FirstAsync(d => d.Id == designId);
 
         return new HumanDesignDiagramModel
         {
-            ActiveGates = design.Activations.Select(a => a.Gate).Distinct().ToList(),
+            ActiveGates = [.. design.Activations.Select(a => a).Distinct()],
 
-            ActiveChannels = design.Channels.Select(c => c.Id.ToString()).ToList(),
+            ActiveChannels = [.. design.Channels.Select(c => c)],
 
-            DefinedCenters = design.Centers
-                .Where(c => c.Definition == "defined")
-                .Select(c => c.CenterName)
-                .ToList()
+            DefinedCenters = [.. design.CenterDefinitions.Where(c => c.Definition == "defined").Select(c => c)],
+
+            VariableArrows = design.Variables
         };
     }
 }

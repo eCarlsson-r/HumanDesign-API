@@ -23,7 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<CrossEntity> Crosses => Set<CrossEntity>();
     public DbSet<PlanetaryActivation> PlanetaryActivations => Set<PlanetaryActivation>();
     public DbSet<AttributeEntity> Attributes => Set<AttributeEntity>();
-
+    public DbSet<FileEntity> Files => Set<FileEntity>();
     public DbSet<CenterEntity> CenterDefinitions => Set<CenterEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

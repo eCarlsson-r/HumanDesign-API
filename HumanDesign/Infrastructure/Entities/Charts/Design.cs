@@ -28,8 +28,8 @@ public class Design
     public int IncarnationCross { get; set; } = default!;
 
     // Navigation
-    public ICollection<CenterEntity> Centers { get; set; } = new List<CenterEntity>();
-    public ICollection<PlanetaryActivation> Activations { get; set; } = new List<PlanetaryActivation>();
-    public ICollection<ChannelEntity> Channels { get; set; } = new List<ChannelEntity>();
+    public ICollection<CenterDefinition> CenterDefinitions { get; set; } = [];
+    public ICollection<PlanetaryActivation> Activations { get; set; } = [];
+    public ICollection<DefinedChannel> Channels { get; set; } = [];
     public VariableSet Variables { get; set; } = default!;
 }

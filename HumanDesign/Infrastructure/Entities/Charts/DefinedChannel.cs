@@ -8,11 +8,16 @@ public class DefinedChannel
 {
     [Key]
     [Column("id")]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     [Column("design_id")]
     public Guid DesignId { get; set; }
     [Column("channel_id")]
-    public int ChannelId { get; set; }
+    public string ChannelId { get; set; } = default!;
+
+    [Column("gate_a")]
+    public int GateA { get; set; }
+    [Column("gate_b")]
+    public int GateB { get; set; }
 
     public Design Design { get; set; } = default!;
 }

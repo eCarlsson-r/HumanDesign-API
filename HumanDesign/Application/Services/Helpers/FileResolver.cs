@@ -1,13 +1,8 @@
-using HumanDesign.Data;
-namespace HumanDesign.Services;
-public class FileResolver
+using HumanDesign.Infrastructure.Data;
+namespace HumanDesign.Application.Services.Helpers;
+public class FileResolver(AppDbContext db)
 {
-    private readonly AppDbContext _db;
-
-    public FileResolver(AppDbContext db)
-    {
-        _db = db;
-    }
+    private readonly AppDbContext _db = db;
 
     public async Task<string?> ResolveImageAsync(int? fileNo)
     {

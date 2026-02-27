@@ -15,6 +15,31 @@
           }
         }
       },
+      "GeoJSON.Net/1.4.1": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "compile": {
+          "lib/net8.0/GeoJSON.Net.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/GeoJSON.Net.dll": {}
+        }
+      },
+      "GeoTimeZone/6.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/GeoTimeZone.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/GeoTimeZone.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "type": "package",
         "compile": {
@@ -539,6 +564,32 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
+      "Newtonsoft.Json/13.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Nominatim.API/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "GeoJSON.Net": "1.4.1",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "compile": {
+          "lib/net8.0/Nominatim.API.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Nominatim.API.dll": {}
+        }
+      },
       "Pomelo.EntityFrameworkCore.MySql/9.0.0": {
         "type": "package",
         "dependencies": {
@@ -748,6 +799,44 @@
         "lib/netstandard2.0/Dapper.dll",
         "lib/netstandard2.0/Dapper.xml",
         "readme.md"
+      ]
+    },
+    "GeoJSON.Net/1.4.1": {
+      "sha512": "jGl6JvyQV4hS3JsZ7FXTmB1tXE1kadXl2iD8H9OIqe1a5q7OfskDh0Cy2+YrEZ13eI4DJ8xTbDJXz2tldKyM8g==",
+      "type": "package",
+      "path": "geojson.net/1.4.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "geojson.net.1.4.1.nupkg.sha512",
+        "geojson.net.nuspec",
+        "lib/net462/GeoJSON.Net.dll",
+        "lib/net6.0/GeoJSON.Net.dll",
+        "lib/net8.0/GeoJSON.Net.dll",
+        "lib/netstandard2.0/GeoJSON.Net.dll",
+        "lib/netstandard2.1/GeoJSON.Net.dll"
+      ]
+    },
+    "GeoTimeZone/6.1.0": {
+      "sha512": "HB3OJcaI2NNfB253co3XY0dUFllCtdR8Jn0kS7GR/m8XMhvEgurDfvgebNeac384S+OOvrgb7HEGbZXOps/8Mw==",
+      "type": "package",
+      "path": "geotimezone/6.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "geotimezone.6.1.0.nupkg.sha512",
+        "geotimezone.nuspec",
+        "lib/net462/GeoTimeZone.dll",
+        "lib/net462/GeoTimeZone.xml",
+        "lib/net8.0/GeoTimeZone.dll",
+        "lib/net8.0/GeoTimeZone.xml",
+        "lib/net9.0/GeoTimeZone.dll",
+        "lib/net9.0/GeoTimeZone.xml",
+        "lib/netstandard2.0/GeoTimeZone.dll",
+        "lib/netstandard2.0/GeoTimeZone.xml",
+        "lib/netstandard2.1/GeoTimeZone.dll",
+        "lib/netstandard2.1/GeoTimeZone.xml"
       ]
     },
     "Humanizer.Core/2.14.1": {
@@ -1961,6 +2050,49 @@
         "netstandard.library.nuspec"
       ]
     },
+    "Newtonsoft.Json/13.0.3": {
+      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/net6.0/Newtonsoft.Json.dll",
+        "lib/net6.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.3.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
+    "Nominatim.API/2.1.0": {
+      "sha512": "pPsWvzMpf8MeU/s8IEm/yFwg5/XOwTL7Fk4yunxq8sW0Qka1DuNPzz+MaaUTGlRaSixyIzXOXubiPVON9usWuQ==",
+      "type": "package",
+      "path": "nominatim.api/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net8.0/Nominatim.API.dll",
+        "lib/netstandard2.0/Nominatim.API.dll",
+        "nominatim.api.2.1.0.nupkg.sha512",
+        "nominatim.api.nuspec"
+      ]
+    },
     "Pomelo.EntityFrameworkCore.MySql/9.0.0": {
       "sha512": "cl7S4s6CbJno0LjNxrBHNc2xxmCliR5i40ATPZk/eTywVaAbHCbdc9vbGc3QThvwGjHqrDHT8vY9m1VF/47o0g==",
       "type": "package",
@@ -2214,10 +2346,12 @@
   "projectFileDependencyGroups": {
     "net10.0": [
       "Dapper >= 2.1.66",
+      "GeoTimeZone >= 6.1.0",
       "Microsoft.AspNetCore.OpenApi >= 9.0.2",
       "Microsoft.EntityFrameworkCore >= 9.0.2",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.2",
       "MySqlConnector >= 2.5.0",
+      "Nominatim.API >= 2.1.0",
       "Pomelo.EntityFrameworkCore.MySql >= 9.0.0",
       "SharpAstrology.HumanDesign >= 1.1.2",
       "SharpAstrology.SwissEph >= 0.2.2"
@@ -2271,6 +2405,10 @@
             "target": "Package",
             "version": "[2.1.66, )"
           },
+          "GeoTimeZone": {
+            "target": "Package",
+            "version": "[6.1.0, )"
+          },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
             "version": "[9.0.2, )"
@@ -2288,6 +2426,10 @@
           "MySqlConnector": {
             "target": "Package",
             "version": "[2.5.0, )"
+          },
+          "Nominatim.API": {
+            "target": "Package",
+            "version": "[2.1.0, )"
           },
           "Pomelo.EntityFrameworkCore.MySql": {
             "target": "Package",

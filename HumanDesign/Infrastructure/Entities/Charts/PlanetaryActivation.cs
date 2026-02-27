@@ -8,13 +8,13 @@ public class PlanetaryActivation
 {
     [Key]
     [Column("id")]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     [Column("design_id")]
     public Guid DesignId { get; set; }
+    [Column("type")]
+    public string Type { get; set; } = default!;
     [Column("planet")]
     public string Planet { get; set; } = default!;
-    [Column("is_design")]
-    public bool IsDesign { get; set; }
     [Column("gate")]
     public int Gate { get; set; }
     [Column("line")]

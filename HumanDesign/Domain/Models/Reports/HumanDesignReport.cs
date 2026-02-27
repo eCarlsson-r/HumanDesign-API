@@ -8,6 +8,9 @@ public class HumanDesignReport
     public string Level { get; set; } = default!;
 
     public AttributeDetail? Type { get; set; }
+    public AttributeDetail? Strategy { get; set; }
+    public AttributeDetail? Signature { get; set; }
+    public AttributeDetail? NotSelfTheme { get; set; }
     public string Authority { get; set; } = "";
     public string Definition { get; set; } = "";
 

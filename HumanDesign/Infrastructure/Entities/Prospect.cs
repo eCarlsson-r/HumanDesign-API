@@ -15,6 +15,7 @@ public class Prospect
 
     [Required]
     public DateTime BirthDateLocal { get; set; }
+    public DateTime BirthDateUtc { get; set; }
 
     [Required]
     public string BirthLocation { get; set; } = default!;

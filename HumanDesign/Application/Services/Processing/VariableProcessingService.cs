@@ -23,6 +23,7 @@ public class VariableProcessingService : IVariableProcessingService
         return new Dictionary<string, string>
         {
             ["Digestion"] = design.Variables.Digestion ?? "",
+            ["Reasoning"] = design.Variables.Reasoning ?? "",
             ["Cognition"] = design.Variables.Cognition ?? "",
             ["Motivation"] = design.Variables.Motivation ?? "",
             ["Perspective"] = design.Variables.Perspective ?? "",

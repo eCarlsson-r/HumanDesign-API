@@ -8,7 +8,7 @@ public class AttributeEntity
 {
     [Key]
     [Column("id")]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     [Column("property")]
     public string Property { get; set; } = default!;
     [Column("value")]

@@ -1,3 +1,5 @@
+using HumanDesign.Infrastructure.Entities.Charts;
+
 namespace HumanDesign.Domain.Models.Charts;
 public class HumanDesignChart
 {
@@ -12,7 +14,7 @@ public class HumanDesignChart
 
     // STRUCTURE
     public List<CenterState> Centers { get; set; } = new();
-    public List<ChannelState> Channels { get; set; } = new();
+    public List<DefinedChannel> Channels { get; set; } = new();
 
     // PLANETARY ACTIVATIONS
     public List<GateActivation> ConsciousGates { get; set; } = new();

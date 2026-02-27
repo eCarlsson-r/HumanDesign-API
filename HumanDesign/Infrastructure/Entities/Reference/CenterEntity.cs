@@ -7,7 +7,7 @@ namespace HumanDesign.Infrastructure.Entities.Reference;
 public class CenterEntity
 {
     [Key]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public Guid DesignId { get; set; }
 

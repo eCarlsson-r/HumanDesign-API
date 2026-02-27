@@ -5,21 +5,14 @@ using HumanDesign.Domain.Models.Requests;
 using HumanDesign.Application.Interfaces;
 
 namespace HumanDesign.Application.Services.Helpers;
-public class ProspectService : IProspectService
+public class ProspectService(
+    AppDbContext db,
+    IGeoService geo,
+    IHumanDesignCalculator calculator) : IProspectService
 {
-    private readonly AppDbContext _db;
-    private readonly IGeoService _geo;
-    private readonly IHumanDesignCalculator _calculator;
-
-    public ProspectService(
-        AppDbContext db,
-        IGeoService geo,
-        IHumanDesignCalculator calculator)
-    {
-        _db = db;
-        _geo = geo;
-        _calculator = calculator;
-    }
+    private readonly AppDbContext _db = db;
+    private readonly IGeoService _geo = geo;
+    private readonly IHumanDesignCalculator _calculator = calculator;
 
     public async Task<Guid> CreateProspectAsync(CreateProspectRequest req)
     {
@@ -32,6 +25,7 @@ public class ProspectService : IProspectService
             Id = Guid.NewGuid(),
             FullName = req.FullName,
             BirthDateLocal = req.BirthDate + req.BirthTime,
+            BirthDateUtc = birthUtc,
             BirthLocation = req.BirthLocation,
             Latitude = lat,
             Longitude = lng,
@@ -50,7 +44,7 @@ public class ProspectService : IProspectService
         return prospect.Id;
     }
 
-    private DateTime ConvertToUtc(DateTime date, TimeSpan time, string tz)
+    private static DateTime ConvertToUtc(DateTime date, TimeSpan time, string tz)
     {
         var local = date.Date + time;
         var tzInfo = TimeZoneInfo.FindSystemTimeZoneById(tz);

@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "63ZWj1rD/UQ=",
+  "dgSpecHash": "6W/Zhc4k1Bc=",
   "success": true,
   "projectFilePath": "/Users/lbert/Documents/HumanDesign/HumanDesign/HumanDesign.csproj",
   "expectedPackageFiles": [
     "/Users/lbert/.nuget/packages/dapper/2.1.66/dapper.2.1.66.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/geojson.net/1.4.1/geojson.net.1.4.1.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/geotimezone/6.1.0/geotimezone.6.1.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/lbert/.nuget/packages/microsoft.aspnetcore.openapi/9.0.2/microsoft.aspnetcore.openapi.9.0.2.nupkg.sha512",
     "/Users/lbert/.nuget/packages/microsoft.bcl.asyncinterfaces/7.0.0/microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
@@ -27,6 +29,8 @@
     "/Users/lbert/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/mysqlconnector/2.5.0/mysqlconnector.2.5.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/netstandard.library/1.6.1/netstandard.library.1.6.1.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/nominatim.api/2.1.0/nominatim.api.2.1.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/pomelo.entityframeworkcore.mysql/9.0.0/pomelo.entityframeworkcore.mysql.9.0.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/sharpastrology.base/0.10.0/sharpastrology.base.0.10.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/sharpastrology.humandesign/1.1.2/sharpastrology.humandesign.1.1.2.nupkg.sha512",

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using HumanDesign.Application.Interfaces;
 using HumanDesign.Application.Services.Diagram;
 
-namespace HumanDesign.Controllers;
+namespace HumanDesign.API.Controllers;
 
 [ApiController]
 [Route("api/diagram")]
