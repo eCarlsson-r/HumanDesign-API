@@ -1,4 +1,4 @@
-namespace HumanDesign.Application.Services.Diagram;
+namespace HumanDesign.Application.Services.Processing;
 
 public static class CenterMapper
 {

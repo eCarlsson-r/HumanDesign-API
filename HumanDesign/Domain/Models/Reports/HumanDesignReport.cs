@@ -23,6 +23,4 @@ public class HumanDesignReport
 
     public List<AttributeDetail> Gates { get; set; } = new();
     public List<AttributeDetail> Channels { get; set; } = new();
-
-    public string? DiagramSvg { get; set; }
 }

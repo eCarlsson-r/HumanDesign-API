@@ -8,6 +8,4 @@ public class PreviewReport
     public string Profile { get; set; } = default!;
     public string Definition { get; set; } = default!;
     public string IncarnationCross { get; set; } = default!;
-
-    public string DiagramSvg { get; set; } = default!;
 }

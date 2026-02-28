@@ -6,7 +6,7 @@ using SharpAstrology.Ephemerides;
 using SharpAstrology.Interfaces;
 using SharpAstrology.Enums;
 using HumanDesign.Domain.Enums;
-using HumanDesign.Application.Services.Diagram;
+using HumanDesign.Application.Services.Processing;
 using HumanDesign.Domain.Models.Diagram;
 
 namespace HumanDesign.Application.Services.Processing;

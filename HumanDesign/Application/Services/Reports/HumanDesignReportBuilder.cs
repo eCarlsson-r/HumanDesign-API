@@ -5,31 +5,17 @@ using HumanDesign.Application.Interfaces;
 using HumanDesign.Domain.Models.Charts;
 using HumanDesign.Domain.Models.Reference;
 using HumanDesign.Domain.Models.Reports;
-using HumanDesign.Application.Services.Diagram;
 
 namespace HumanDesign.Application.Services.Reports;
 
-public class HumanDesignReportBuilder : IHumanDesignReportBuilder
+public class HumanDesignReportBuilder(
+    AppDbContext db,
+    IReferenceDataService reference,
+    ITypeInterpretationService typeResolver) : IHumanDesignReportBuilder
 {
-    private readonly AppDbContext _db;
-    private readonly IReferenceDataService _reference;
-    private readonly ITypeInterpretationService _typeResolver;
-    private readonly DiagramModelBuilder _diagramBuilder;
-    private readonly IDiagramRenderer _renderer;
-
-    public HumanDesignReportBuilder(
-        AppDbContext db,
-        IReferenceDataService reference,
-        ITypeInterpretationService typeResolver,
-        DiagramModelBuilder diagramBuilder,
-        IDiagramRenderer renderer)
-    {
-        _db = db;
-        _reference = reference;
-        _typeResolver = typeResolver;
-        _diagramBuilder = diagramBuilder;
-        _renderer = renderer;
-    }
+    private readonly AppDbContext _db = db;
+    private readonly IReferenceDataService _reference = reference;
+    private readonly ITypeInterpretationService _typeResolver = typeResolver;
 
     // ================= PREVIEW =================
 
@@ -48,8 +34,6 @@ public class HumanDesignReportBuilder : IHumanDesignReportBuilder
         report.Signature = await _typeResolver.GetSignatureAsync(design.Type);
         report.NotSelfTheme = await _typeResolver.GetNotSelfThemeAsync(design.Type);
         report.Profile = await _reference.GetProfileAsync(design.Profile);
-
-        report.DiagramSvg = await GenerateDiagramAsync(design);
 
         return report;
     }
@@ -99,11 +83,7 @@ public class HumanDesignReportBuilder : IHumanDesignReportBuilder
             .Include(d => d.Channels)
             .Include(d => d.Activations)
             .Include(d => d.Variables)
-            .FirstOrDefaultAsync(d => d.Id == id);
-
-        if (design == null)
-            throw new Exception("Design not found");
-
+            .FirstOrDefaultAsync(d => d.Id == id) ?? throw new Exception("Design not found");
         return design;
     }
 
@@ -174,15 +154,5 @@ public class HumanDesignReportBuilder : IHumanDesignReportBuilder
                 IsDefined = c.Definition == "defined"
             })
             .ToListAsync();
-    }
-
-    // ====================================================
-    // DIAGRAM GENERATION
-    // ====================================================
-
-    private async Task<string> GenerateDiagramAsync(Design design)
-    {
-        var model = await _diagramBuilder.BuildAsync(design.Id);
-        return await _renderer.RenderSvgAsync(model);
     }
 }

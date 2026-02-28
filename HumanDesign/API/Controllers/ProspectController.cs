@@ -15,14 +15,16 @@ public class ProspectController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateProspectRequest req)
+    public async Task<IActionResult> Create(CreateProspectRequest request)
     {
-        var id = await _service.CreateProspectAsync(req);
+        var id = await _service.CreateProspectAsync(request);
+        return Ok(id);
+    }
 
-        return Ok(new
-        {
-            ProspectId = id,
-            Message = "Chart is being generated"
-        });
+    [HttpGet("{id}/report")]
+    public async Task<IActionResult> GetReport(Guid id)
+    {
+        var report = await _service.GetReportAsync(id);
+        return Ok(report);
     }
 }
