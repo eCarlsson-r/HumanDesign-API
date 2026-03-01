@@ -62,7 +62,7 @@ namespace HumanDesign.Migrations
 
                     b.Property<string>("CenterName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Definition")
                         .HasColumnType("longtext");
@@ -72,7 +72,8 @@ namespace HumanDesign.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DesignId");
+                    b.HasIndex("DesignId", "CenterName")
+                        .IsUnique();
 
                     b.ToTable("center_definition");
                 });
@@ -391,23 +392,40 @@ namespace HumanDesign.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CenterName")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name");
 
                     b.Property<string>("Definition")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("definition");
 
-                    b.Property<Guid>("DesignId")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("Detail")
+                        .HasColumnType("longtext")
+                        .HasColumnName("detail");
+
+                    b.Property<int?>("FileId")
+                        .HasColumnType("int")
+                        .HasColumnName("file_id");
+
+                    b.Property<string>("Preview")
+                        .HasColumnType("longtext")
+                        .HasColumnName("preview");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("longtext")
+                        .HasColumnName("summary");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DesignId", "CenterName")
+                    b.HasIndex("CenterName", "Definition")
                         .IsUnique();
 
                     b.ToTable("center");
@@ -423,7 +441,6 @@ namespace HumanDesign.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Detail")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("detail");
 
@@ -449,7 +466,6 @@ namespace HumanDesign.Migrations
                         .HasColumnName("name");
 
                     b.Property<string>("Preview")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("preview");
 
@@ -458,7 +474,6 @@ namespace HumanDesign.Migrations
                         .HasColumnName("shadow");
 
                     b.Property<string>("Summary")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("summary");
 
@@ -497,10 +512,26 @@ namespace HumanDesign.Migrations
                         .HasColumnType("int")
                         .HasColumnName("cross4");
 
+                    b.Property<string>("Detail")
+                        .HasColumnType("longtext")
+                        .HasColumnName("detail");
+
+                    b.Property<int?>("FileId")
+                        .HasColumnType("int")
+                        .HasColumnName("file_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
+
+                    b.Property<string>("Preview")
+                        .HasColumnType("longtext")
+                        .HasColumnName("preview");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("longtext")
+                        .HasColumnName("summary");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -522,7 +553,6 @@ namespace HumanDesign.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Number"));
 
                     b.Property<string>("Detail")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("detail");
 
@@ -531,12 +561,10 @@ namespace HumanDesign.Migrations
                         .HasColumnName("file_id");
 
                     b.Property<string>("Preview")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("preview");
 
                     b.Property<string>("Summary")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("summary");
 

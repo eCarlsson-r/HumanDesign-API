@@ -1,21 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using HumanDesign.Infrastructure.Data;
-using HumanDesign.Infrastructure.Entities.Charts;
 using HumanDesign.Application.Interfaces;
-using HumanDesign.Domain.Models.Charts;
-using HumanDesign.Domain.Models.Reference;
 using HumanDesign.Domain.Models.Reports;
+using HumanDesign.Infrastructure.Entities.Charts;
 
 namespace HumanDesign.Application.Services.Reports;
 
 public class HumanDesignReportBuilder(
     AppDbContext db,
-    IReferenceDataService reference,
-    ITypeInterpretationService typeResolver) : IHumanDesignReportBuilder
+    IContentResolverService resolver) : IHumanDesignReportBuilder
 {
     private readonly AppDbContext _db = db;
-    private readonly IReferenceDataService _reference = reference;
-    private readonly ITypeInterpretationService _typeResolver = typeResolver;
+    private readonly IContentResolverService _resolver = resolver;
 
     // ================= PREVIEW =================
 
@@ -28,12 +24,38 @@ public class HumanDesignReportBuilder(
             Level = "Preview"
         };
 
-        report.Type = await _reference.GetTypeAsync(design.Type);
-        report.Strategy = await _typeResolver.GetStrategyAsync(design.Type);
-        report.Authority = design.Authority;
-        report.Signature = await _typeResolver.GetSignatureAsync(design.Type);
-        report.NotSelfTheme = await _typeResolver.GetNotSelfThemeAsync(design.Type);
-        report.Profile = await _reference.GetProfileAsync(design.Profile);
+        // TYPE BUNDLE (1 resolver call)
+
+        var typeBundle = await _resolver.ResolveTypeBundleAsync(design.Type);
+
+        report.Type = typeBundle.Type;
+        report.Strategy = typeBundle.Strategy;
+        report.Signature = typeBundle.Signature;
+        report.NotSelfTheme = typeBundle.NotSelf;
+
+        // PROFILE
+
+        report.Profile = await _resolver.ResolveProfileAsync(design.Profile);
+
+        // AUTHORITY + DEFINITION (NEW)
+
+        report.Authority = await _resolver.ResolveAttributeAsync("Authority", design.Authority);
+        report.Definition = await _resolver.ResolveAttributeAsync("Definition", design.Definition);
+
+        // INCARNATION CROSS
+
+        report.Cross = await _resolver.ResolveCrossAsync(design.IncarnationCross);
+
+        // CENTERS WITH CONTENT
+
+        report.Centers = await ResolveCentersAsync(designId);
+
+        // VARIABLES
+
+        report.Variables = await ResolveVariablesAsync(design);
+
+        report.Gates = await ResolveGatesAsync(design);
+        report.Channels = await ResolveChannelsAsync(design);
 
         return report;
     }
@@ -43,16 +65,21 @@ public class HumanDesignReportBuilder(
     public async Task<HumanDesignReport> BuildSummaryAsync(Guid designId)
     {
         var report = await BuildPreviewAsync(designId);
-
         var design = await LoadDesignAsync(designId);
 
         report.Level = "Summary";
-        report.Definition = design.Definition;
-        report.Cross = await _reference.GetCrossAsync(design.IncarnationCross);
 
-        report.Centers = await GetCentersAsync(designId);
+        // INCARNATION CROSS
 
-        report.Variables = await LoadVariablesAsync(design);
+        report.Cross = await _resolver.ResolveCrossAsync(design.IncarnationCross);
+
+        // CENTERS WITH CONTENT
+
+        report.Centers = await ResolveCentersAsync(designId);
+
+        // VARIABLES
+
+        report.Variables = await ResolveVariablesAsync(design);
 
         return report;
     }
@@ -62,39 +89,67 @@ public class HumanDesignReportBuilder(
     public async Task<HumanDesignReport> BuildDetailAsync(Guid designId)
     {
         var report = await BuildSummaryAsync(designId);
-
         var design = await LoadDesignAsync(designId);
 
         report.Level = "Detail";
 
-        report.Gates = await LoadGateInterpretations(design);
-        report.Channels = await LoadChannelInterpretations(design);
+        report.Gates = await ResolveGatesAsync(design);
+        report.Channels = await ResolveChannelsAsync(design);
 
         return report;
     }
 
-    // ====================================================
+    // =====================================================
     // INTERNAL HELPERS
-    // ====================================================
+    // =====================================================
 
     private async Task<Design> LoadDesignAsync(Guid id)
     {
-        var design = await _db.Designs
+        return await _db.Designs
             .Include(d => d.Channels)
             .Include(d => d.Activations)
             .Include(d => d.Variables)
-            .FirstOrDefaultAsync(d => d.Id == id) ?? throw new Exception("Design not found");
-        return design;
+            .Include(d => d.CenterDefinitions)
+            .FirstOrDefaultAsync(d => d.Id == id)
+            ?? throw new Exception("Design not found");
     }
 
-    private async Task<Dictionary<string, AttributeDetail>> LoadVariablesAsync(Design design)
+    // ---------------- CENTERS ----------------
+
+    private async Task<List<CenterReport>> ResolveCentersAsync(Guid designId)
     {
-        var result = new Dictionary<string, AttributeDetail>();
+        var centers = await _db.CenterDefinitions
+            .Where(c => c.DesignId == designId)
+            .ToListAsync();
+
+        var result = new List<CenterReport>();
+
+        foreach (var c in centers)
+        {
+            var content = await _resolver.ResolveCenterAsync(c.CenterName, c.Definition);
+
+            result.Add(new CenterReport
+            {
+                Name = c.CenterName,
+                IsDefined = c.Definition == "Defined",
+                Content = content
+            });
+        }
+
+        return result;
+    }
+
+    // ---------------- VARIABLES ----------------
+
+    private async Task<Dictionary<string, ResolvedContent>> ResolveVariablesAsync(Design design)
+    {
+        var result = new Dictionary<string, ResolvedContent>();
 
         var vars = new Dictionary<string, string?>
         {
             ["Digestion"] = design.Variables.Digestion,
             ["Cognition"] = design.Variables.Cognition,
+            ["Reasoning"] = design.Variables.Reasoning,
             ["Motivation"] = design.Variables.Motivation,
             ["Perspective"] = design.Variables.Perspective,
             ["Environment"] = design.Variables.Environment
@@ -104,55 +159,44 @@ public class HumanDesignReportBuilder(
         {
             if (kv.Value == null) continue;
 
-            var detail = await _reference.GetVariableAsync($"{kv.Key}:{kv.Value}");
-            if (detail != null)
-                result[kv.Key] = detail;
+            var content = await _resolver.ResolveAttributeAsync(kv.Key, kv.Value);
+            if (content != null) result[kv.Key] = content;
         }
 
         return result;
     }
 
-    private async Task<List<AttributeDetail>> LoadGateInterpretations(Design design)
+    // ---------------- GATES ----------------
+
+    private async Task<List<ResolvedContent>> ResolveGatesAsync(Design design)
     {
-        var list = new List<AttributeDetail>();
+        var list = new List<ResolvedContent>();
 
         var gates = design.Activations
             .Select(a => a.Gate)
             .Distinct();
 
-        foreach (var gate in gates)
+        foreach (var g in gates)
         {
-            var detail = await _reference.GetGateAsync(gate);
-            if (detail != null)
-                list.Add(detail);
+            var content = await _resolver.ResolveGateAsync(g);
+            if (content != null) list.Add(content);
         }
 
         return list;
     }
 
-    private async Task<List<AttributeDetail>> LoadChannelInterpretations(Design design)
+    // ---------------- CHANNELS ----------------
+
+    private async Task<List<ResolvedContent>> ResolveChannelsAsync(Design design)
     {
-        var list = new List<AttributeDetail>();
+        var list = new List<ResolvedContent>();
 
         foreach (var ch in design.Channels)
         {
-            var detail = await _reference.GetChannelAsync(ch.Id);
-            if (detail != null)
-                list.Add(detail);
+            var content = await _resolver.ResolveChannelAsync(ch.Id);
+            if (content != null) list.Add(content);
         }
 
         return list;
-    }
-
-    private async Task<List<CenterState>> GetCentersAsync(Guid designId)
-    {
-        return await _db.CenterDefinitions
-            .Where(c => c.DesignId == designId)
-            .Select(c => new CenterState
-            {
-                Name = c.CenterName,
-                IsDefined = c.Definition == "defined"
-            })
-            .ToListAsync();
     }
 }

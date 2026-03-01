@@ -19,6 +19,8 @@ public class ProfileEntity
     [Column("name")]
     public string Name { get; set; } = default!;
 
+    [Column("preview")]
+    public string? Preview { get; set; }
     [Column("summary")]
     public string? Summary { get; set; }
 

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using HumanDesign.Infrastructure.Data;
 using HumanDesign.Application.Interfaces;
+using HumanDesign.Infrastructure.Persistence.Seed;
 using HumanDesign.Application.Services.Reference;
 using HumanDesign.Application.Services.Reports;
 using HumanDesign.Application.Services.Processing;
@@ -24,17 +25,21 @@ builder.Services.AddCors(options =>
     });
 });
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+
+builder.Services.AddScoped<IContentResolverService, ContentResolverService>();
+builder.Services.AddScoped<IAIContentGenerator, OpenAIContentGenerator>();
+builder.Services.AddScoped<ReferenceDataSeeder>();
 builder.Services.AddScoped<IProspectService, ProspectService>(); 
 builder.Services.AddScoped<FileResolver>();
 builder.Services.AddScoped<IHumanDesignCalculator, HumanDesignCalculator>();
-builder.Services.AddScoped<IReferenceDataService, ReferenceDataService>();
-builder.Services.AddScoped<IInterpretationService, InterpretationService>();
-builder.Services.AddScoped<ITypeInterpretationService, TypeInterpretationService>();
 builder.Services.AddScoped<IVariableProcessingService, VariableProcessingService>();
 builder.Services.AddScoped<IGeoService, GeoService>();
 builder.Services.AddScoped<IHumanDesignReportBuilder, HumanDesignReportBuilder>();
 
 var app = builder.Build();
+await app.Services.CreateScope().ServiceProvider.GetRequiredService<ReferenceDataSeeder>().SeedAsync();
+
 //app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();

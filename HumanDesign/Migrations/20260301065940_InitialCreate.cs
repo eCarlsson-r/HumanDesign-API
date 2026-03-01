@@ -45,17 +45,23 @@ namespace HumanDesign.Migrations
                 name: "center",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    DesignId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CenterName = table.Column<string>(type: "varchar(255)", nullable: false)
+                    name = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Definition = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    definition = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    preview = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    summary = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    detail = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_center", x => x.Id);
+                    table.PrimaryKey("PK_center", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -71,11 +77,11 @@ namespace HumanDesign.Migrations
                     gate_b = table.Column<int>(type: "int", nullable: false),
                     theme = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    preview = table.Column<string>(type: "longtext", nullable: false)
+                    preview = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    summary = table.Column<string>(type: "longtext", nullable: false)
+                    summary = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    detail = table.Column<string>(type: "longtext", nullable: false)
+                    detail = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     gift = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -102,7 +108,14 @@ namespace HumanDesign.Migrations
                     cross1 = table.Column<int>(type: "int", nullable: true),
                     cross2 = table.Column<int>(type: "int", nullable: true),
                     cross3 = table.Column<int>(type: "int", nullable: true),
-                    cross4 = table.Column<int>(type: "int", nullable: true)
+                    cross4 = table.Column<int>(type: "int", nullable: true),
+                    preview = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    summary = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    detail = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -138,11 +151,11 @@ namespace HumanDesign.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    preview = table.Column<string>(type: "longtext", nullable: false)
+                    preview = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    summary = table.Column<string>(type: "longtext", nullable: false)
+                    summary = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    detail = table.Column<string>(type: "longtext", nullable: false)
+                    detail = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     file_id = table.Column<int>(type: "int", nullable: true)
                 },
@@ -223,6 +236,24 @@ namespace HumanDesign.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "variable_arrow",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    design_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    IsLeft = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Color = table.Column<int>(type: "int", nullable: false),
+                    Tone = table.Column<int>(type: "int", nullable: false),
+                    Base = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_variable_arrow", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "design",
                 columns: table => new
                 {
@@ -257,7 +288,7 @@ namespace HumanDesign.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     DesignId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CenterName = table.Column<string>(type: "longtext", nullable: false)
+                    CenterName = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Definition = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -281,10 +312,10 @@ namespace HumanDesign.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     design_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    gate_a = table.Column<int>(type: "int", nullable: false),
-                    gate_b = table.Column<int>(type: "int", nullable: false),
                     channel_id = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    gate_a = table.Column<int>(type: "int", nullable: false),
+                    gate_b = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -336,6 +367,8 @@ namespace HumanDesign.Migrations
                     design_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     digestion = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    reasoning = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     cognition = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     motivation = table.Column<string>(type: "longtext", nullable: false)
@@ -344,14 +377,10 @@ namespace HumanDesign.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     environment = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    digestion_arrow = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    environment_arrow = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    awareness_arrow = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    perspective_arrow = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    DigestionArrowId = table.Column<int>(type: "int", nullable: false),
+                    EnvironmentArrowId = table.Column<int>(type: "int", nullable: false),
+                    AwarenessArrowId = table.Column<int>(type: "int", nullable: false),
+                    PerspectiveArrowId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -362,19 +391,44 @@ namespace HumanDesign.Migrations
                         principalTable: "design",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_variables_variable_arrow_AwarenessArrowId",
+                        column: x => x.AwarenessArrowId,
+                        principalTable: "variable_arrow",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_variables_variable_arrow_DigestionArrowId",
+                        column: x => x.DigestionArrowId,
+                        principalTable: "variable_arrow",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_variables_variable_arrow_EnvironmentArrowId",
+                        column: x => x.EnvironmentArrowId,
+                        principalTable: "variable_arrow",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_variables_variable_arrow_PerspectiveArrowId",
+                        column: x => x.PerspectiveArrowId,
+                        principalTable: "variable_arrow",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_center_DesignId_CenterName",
+                name: "IX_center_name_definition",
                 table: "center",
-                columns: new[] { "DesignId", "CenterName" },
+                columns: new[] { "name", "definition" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_center_definition_DesignId",
+                name: "IX_center_definition_DesignId_CenterName",
                 table: "center_definition",
-                column: "DesignId");
+                columns: new[] { "DesignId", "CenterName" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_defined_channels_design_id",
@@ -393,10 +447,30 @@ namespace HumanDesign.Migrations
                 column: "design_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_variables_AwarenessArrowId",
+                table: "variables",
+                column: "AwarenessArrowId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_variables_design_id",
                 table: "variables",
                 column: "design_id",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_variables_DigestionArrowId",
+                table: "variables",
+                column: "DigestionArrowId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_variables_EnvironmentArrowId",
+                table: "variables",
+                column: "EnvironmentArrowId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_variables_PerspectiveArrowId",
+                table: "variables",
+                column: "PerspectiveArrowId");
         }
 
         /// <inheritdoc />
@@ -440,6 +514,9 @@ namespace HumanDesign.Migrations
 
             migrationBuilder.DropTable(
                 name: "design");
+
+            migrationBuilder.DropTable(
+                name: "variable_arrow");
 
             migrationBuilder.DropTable(
                 name: "prospects");

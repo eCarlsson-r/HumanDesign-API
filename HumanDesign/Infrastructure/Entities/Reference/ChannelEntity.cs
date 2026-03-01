@@ -19,11 +19,11 @@ public class ChannelEntity
     [Column("theme")]
     public string Theme { get; set; } = string.Empty;
     [Column("preview")]
-    public string Preview { get; set; } = default!;
+    public string? Preview { get; set; } = default!;
     [Column("summary")]
-    public string Summary { get; set; } = default!;
+    public string? Summary { get; set; } = default!;
     [Column("detail")]
-    public string Detail { get; set; } = default!;
+    public string? Detail { get; set; } = default!;
     [Column("gift")]
     public string? Gift { get; set; }
     [Column("shadow")]

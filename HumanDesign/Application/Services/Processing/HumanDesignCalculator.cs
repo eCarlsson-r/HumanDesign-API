@@ -6,7 +6,6 @@ using SharpAstrology.Ephemerides;
 using SharpAstrology.Interfaces;
 using SharpAstrology.Enums;
 using HumanDesign.Domain.Enums;
-using HumanDesign.Application.Services.Processing;
 using HumanDesign.Domain.Models.Diagram;
 
 namespace HumanDesign.Application.Services.Processing;
@@ -75,7 +74,7 @@ public class HumanDesignCalculator : IHumanDesignCalculator
             centers.Add(new CenterDefinition
             {
                 CenterName = CenterMapper.ToHdName(center.ToString()),
-                Definition = activation != ActivationTypes.None ? "defined" : "undefined"
+                Definition = activation != ActivationTypes.None ? "Defined" : "Undefined"
             });
         }
 
@@ -86,7 +85,7 @@ public class HumanDesignCalculator : IHumanDesignCalculator
     {
         var digestion = (Digestion)chart.DesignActivation[Planets.Sun].Color.ToNumber();
         var sense = (Sense)chart.DesignActivation[Planets.Sun].Tone.ToNumber();
-        var designSense = (Sense)chart.DesignActivation[Planets.Earth].Tone.ToNumber();
+        var designSense = (DesignSense)chart.DesignActivation[Planets.Earth].Tone.ToNumber();
         var motivation = (Motivation)chart.PersonalityActivation[Planets.Sun].Color.ToNumber();
         var perspective = (Perspective)chart.PersonalityActivation[Planets.Sun].Tone.ToNumber();
         var environment = (Domain.Enums.Environment)chart.DesignActivation[Planets.Sun].Color.ToNumber();
@@ -133,7 +132,7 @@ public class HumanDesignCalculator : IHumanDesignCalculator
             Authority = chart.Strategy.ToString(),
             Definition = chart.SplitDefinition.ToText(),
             Profile = chart.Profile.ToText(),
-            IncarnationCross = (int)chart.IncarnationCross,
+            IncarnationCross = chart.IncarnationCross.ToText(),
 
             Variables = MapVariables(chart),
             CenterDefinitions = MapCenters(chart),

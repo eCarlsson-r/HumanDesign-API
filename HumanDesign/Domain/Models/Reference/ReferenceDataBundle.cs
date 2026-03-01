@@ -12,5 +12,7 @@ public class ReferenceDataBundle
 
     public Dictionary<int, AttributeDetail> Crosses { get; set; } = new();
 
+    public Dictionary<int, AttributeDetail> Centers { get; set; } = new();
+
     public Dictionary<string, AttributeDetail> Variables { get; set; } = new();
 }

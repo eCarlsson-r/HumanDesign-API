@@ -27,4 +27,12 @@ public class CrossEntity
 
     [Column("cross4")]
     public int? Cross4 { get; set; }
+    [Column("preview")]
+    public string? Preview { get; set; } = default!;
+    [Column("summary")]
+    public string? Summary { get; set; } = default!;
+    [Column("detail")]
+    public string? Detail { get; set; } = default!;
+    [Column("file_id")]
+    public int? FileId { get; set; }
 }

@@ -129,3 +129,10 @@
 /Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/GeoTimeZone.dll
 /Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Newtonsoft.Json.dll
 /Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Nominatim.API.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/attributes.json
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/centers.json
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/channels.json
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/crosses.json
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/gates.json
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/profiles.json
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Infrastructure/Persistence/Seed/SeedData/types.json

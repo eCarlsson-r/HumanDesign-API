@@ -14,13 +14,13 @@ public class GateEntity
     public string Title { get; set; } = default!;
 
     [Column("preview")]
-    public string Preview { get; set; } = default!;
+    public string? Preview { get; set; } = default!;
 
     [Column("summary")]
-    public string Summary { get; set; } = default!;
+    public string? Summary { get; set; } = default!;
 
     [Column("detail")]
-    public string Detail { get; set; } = default!;
+    public string? Detail { get; set; } = default!;
 
     [Column("file_id")]
     public int? FileId { get; set; }

@@ -12,5 +12,5 @@ public class CenterDefinition
 
     public string CenterName { get; set; } = "";
 
-    public string? Definition { get; set; } // defined / open
+    public string Definition { get; set; } = ""; // defined / open
 }

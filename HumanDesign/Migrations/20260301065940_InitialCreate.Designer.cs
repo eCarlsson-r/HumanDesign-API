@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanDesign.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260227094653_InitialCreate")]
+    [Migration("20260301065940_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,6 +25,36 @@ namespace HumanDesign.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("HumanDesign.Domain.Models.Diagram.VariableArrow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Base")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Color")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("DesignId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("design_id");
+
+                    b.Property<bool>("IsLeft")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Tone")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("variable_arrow");
+                });
+
             modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.CenterDefinition", b =>
                 {
                     b.Property<int>("Id")
@@ -35,7 +65,7 @@ namespace HumanDesign.Migrations
 
                     b.Property<string>("CenterName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Definition")
                         .HasColumnType("longtext");
@@ -45,7 +75,8 @@ namespace HumanDesign.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DesignId");
+                    b.HasIndex("DesignId", "CenterName")
+                        .IsUnique();
 
                     b.ToTable("center_definition");
                 });
@@ -185,10 +216,8 @@ namespace HumanDesign.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AwarenessArrow")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("awareness_arrow");
+                    b.Property<int>("AwarenessArrowId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Cognition")
                         .IsRequired()
@@ -204,20 +233,16 @@ namespace HumanDesign.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("digestion");
 
-                    b.Property<string>("DigestionArrow")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("digestion_arrow");
+                    b.Property<int>("DigestionArrowId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Environment")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("environment");
 
-                    b.Property<string>("EnvironmentArrow")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("environment_arrow");
+                    b.Property<int>("EnvironmentArrowId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Motivation")
                         .IsRequired()
@@ -229,15 +254,26 @@ namespace HumanDesign.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("perspective");
 
-                    b.Property<string>("PerspectiveArrow")
+                    b.Property<int>("PerspectiveArrowId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reasoning")
                         .IsRequired()
                         .HasColumnType("longtext")
-                        .HasColumnName("perspective_arrow");
+                        .HasColumnName("reasoning");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AwarenessArrowId");
+
                     b.HasIndex("DesignId")
                         .IsUnique();
+
+                    b.HasIndex("DigestionArrowId");
+
+                    b.HasIndex("EnvironmentArrowId");
+
+                    b.HasIndex("PerspectiveArrowId");
 
                     b.ToTable("variables");
                 });
@@ -359,23 +395,40 @@ namespace HumanDesign.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CenterName")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name");
 
                     b.Property<string>("Definition")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("definition");
 
-                    b.Property<Guid>("DesignId")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("Detail")
+                        .HasColumnType("longtext")
+                        .HasColumnName("detail");
+
+                    b.Property<int?>("FileId")
+                        .HasColumnType("int")
+                        .HasColumnName("file_id");
+
+                    b.Property<string>("Preview")
+                        .HasColumnType("longtext")
+                        .HasColumnName("preview");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("longtext")
+                        .HasColumnName("summary");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DesignId", "CenterName")
+                    b.HasIndex("CenterName", "Definition")
                         .IsUnique();
 
                     b.ToTable("center");
@@ -391,7 +444,6 @@ namespace HumanDesign.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Detail")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("detail");
 
@@ -417,7 +469,6 @@ namespace HumanDesign.Migrations
                         .HasColumnName("name");
 
                     b.Property<string>("Preview")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("preview");
 
@@ -426,7 +477,6 @@ namespace HumanDesign.Migrations
                         .HasColumnName("shadow");
 
                     b.Property<string>("Summary")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("summary");
 
@@ -465,10 +515,26 @@ namespace HumanDesign.Migrations
                         .HasColumnType("int")
                         .HasColumnName("cross4");
 
+                    b.Property<string>("Detail")
+                        .HasColumnType("longtext")
+                        .HasColumnName("detail");
+
+                    b.Property<int?>("FileId")
+                        .HasColumnType("int")
+                        .HasColumnName("file_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
+
+                    b.Property<string>("Preview")
+                        .HasColumnType("longtext")
+                        .HasColumnName("preview");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("longtext")
+                        .HasColumnName("summary");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -490,7 +556,6 @@ namespace HumanDesign.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Number"));
 
                     b.Property<string>("Detail")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("detail");
 
@@ -499,12 +564,10 @@ namespace HumanDesign.Migrations
                         .HasColumnName("file_id");
 
                     b.Property<string>("Preview")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("preview");
 
                     b.Property<string>("Summary")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("summary");
 
@@ -648,13 +711,45 @@ namespace HumanDesign.Migrations
 
             modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.VariableSet", b =>
                 {
+                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "AwarenessArrow")
+                        .WithMany()
+                        .HasForeignKey("AwarenessArrowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("HumanDesign.Infrastructure.Entities.Charts.Design", "Design")
                         .WithOne("Variables")
                         .HasForeignKey("HumanDesign.Infrastructure.Entities.Charts.VariableSet", "DesignId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "DigestionArrow")
+                        .WithMany()
+                        .HasForeignKey("DigestionArrowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "EnvironmentArrow")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentArrowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "PerspectiveArrow")
+                        .WithMany()
+                        .HasForeignKey("PerspectiveArrowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AwarenessArrow");
+
                     b.Navigation("Design");
+
+                    b.Navigation("DigestionArrow");
+
+                    b.Navigation("EnvironmentArrow");
+
+                    b.Navigation("PerspectiveArrow");
                 });
 
             modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.Design", b =>

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HumanDesign.Infrastructure.Entities.Reference;
 
 namespace HumanDesign.Infrastructure.Entities.Charts;
 
@@ -25,7 +24,7 @@ public class Design
     [Column("profile")]
     public string Profile { get; set; } = default!;
     [Column("incarnation_cross")]
-    public int IncarnationCross { get; set; } = default!;
+    public string IncarnationCross { get; set; } = default!;
 
     // Navigation
     public ICollection<CenterDefinition> CenterDefinitions { get; set; } = [];

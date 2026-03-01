@@ -4,5 +4,4 @@ namespace HumanDesign.Application.Interfaces;
 public interface IProspectService
 {
     Task<Guid> CreateProspectAsync(CreateProspectRequest request);
-    Task<Design> GetReportAsync(Guid prospectId);
 }
