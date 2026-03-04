@@ -17,116 +17,72 @@ public class HumanDesignReportBuilder(
 
     public async Task<HumanDesignReport> BuildPreviewAsync(Guid designId)
     {
-        var design = await LoadDesignAsync(designId);
-
-        var report = new HumanDesignReport
-        {
-            Level = "Preview"
-        };
-
-        // TYPE BUNDLE (1 resolver call)
-
-        var typeBundle = await _resolver.ResolveTypeBundleAsync(design.Type);
-
-        report.Type = typeBundle.Type;
-        report.Strategy = typeBundle.Strategy;
-        report.Signature = typeBundle.Signature;
-        report.NotSelfTheme = typeBundle.NotSelf;
-
-        // PROFILE
-
-        report.Profile = await _resolver.ResolveProfileAsync(design.Profile);
-
-        // AUTHORITY + DEFINITION (NEW)
-
-        report.Authority = await _resolver.ResolveAttributeAsync("Authority", design.Authority);
-        report.Definition = await _resolver.ResolveAttributeAsync("Definition", design.Definition);
-
-        // INCARNATION CROSS
-
-        report.Cross = await _resolver.ResolveCrossAsync(design.IncarnationCross);
-
-        // CENTERS WITH CONTENT
-
-        report.Centers = await ResolveCentersAsync(designId);
-
-        // VARIABLES
-
-        report.Variables = await ResolveVariablesAsync(design);
-
-        report.Gates = await ResolveGatesAsync(design);
-        report.Channels = await ResolveChannelsAsync(design);
-
-        return report;
+        return await GenerateReport(designId, "Preview");
     }
 
     // ================= SUMMARY =================
 
     public async Task<HumanDesignReport> BuildSummaryAsync(Guid designId)
     {
-        var report = await BuildPreviewAsync(designId);
-        var design = await LoadDesignAsync(designId);
-
-        report.Level = "Summary";
-
-        // INCARNATION CROSS
-
-        report.Cross = await _resolver.ResolveCrossAsync(design.IncarnationCross);
-
-        // CENTERS WITH CONTENT
-
-        report.Centers = await ResolveCentersAsync(designId);
-
-        // VARIABLES
-
-        report.Variables = await ResolveVariablesAsync(design);
-
-        return report;
+        return await GenerateReport(designId, "Summary");
     }
 
     // ================= DETAIL =================
 
     public async Task<HumanDesignReport> BuildDetailAsync(Guid designId)
     {
-        var report = await BuildSummaryAsync(designId);
-        var design = await LoadDesignAsync(designId);
-
-        report.Level = "Detail";
-
-        report.Gates = await ResolveGatesAsync(design);
-        report.Channels = await ResolveChannelsAsync(design);
-
-        return report;
+        return await GenerateReport(designId, "Detail");
     }
 
     // =====================================================
     // INTERNAL HELPERS
     // =====================================================
 
-    private async Task<Design> LoadDesignAsync(Guid id)
+    private async Task<HumanDesignReport> GenerateReport(Guid id, string level)
     {
-        return await _db.Designs
+        var design = await _db.Designs
             .Include(d => d.Channels)
             .Include(d => d.Activations)
             .Include(d => d.Variables)
             .Include(d => d.CenterDefinitions)
             .FirstOrDefaultAsync(d => d.Id == id)
             ?? throw new Exception("Design not found");
+
+        var typeBundle = await _resolver.ResolveTypeBundleAsync(design.Type, level);
+        var report = new HumanDesignReport
+        {
+            Level = level,
+            Type = typeBundle.Type,
+            Strategy = typeBundle.Strategy,
+            Signature = typeBundle.Signature,
+            NotSelfTheme = typeBundle.NotSelf,
+            Authority = await _resolver.ResolveAttributeAsync("Authority", design.Authority, level),
+            Definition = await _resolver.ResolveAttributeAsync("Definition", design.Definition, level),
+            Profile = await _resolver.ResolveProfileAsync(design.Profile, level),
+            Cross = await _resolver.ResolveCrossAsync(design.IncarnationCross, level),
+            Centers = await ResolveCentersAsync(design, level),
+            Variables = await ResolveVariablesAsync(design, level),
+            Arrows = await ResolveArrowsAsync(design),
+            Gates = await ResolveGatesAsync(design, level),
+            DesignGates = [.. design.Activations.Where(a => a.Type == "Design")],
+            PersonalityGates = [.. design.Activations.Where(a => a.Type == "Personality")],
+            Channels = await ResolveChannelsAsync(design, level)
+        };
+        
+        return report;
     }
 
     // ---------------- CENTERS ----------------
 
-    private async Task<List<CenterReport>> ResolveCentersAsync(Guid designId)
+    private async Task<List<CenterReport>> ResolveCentersAsync(Design design, string level)
     {
-        var centers = await _db.CenterDefinitions
-            .Where(c => c.DesignId == designId)
-            .ToListAsync();
+        var centers = design.CenterDefinitions.ToList();
 
         var result = new List<CenterReport>();
 
         foreach (var c in centers)
         {
-            var content = await _resolver.ResolveCenterAsync(c.CenterName, c.Definition);
+            var content = await _resolver.ResolveCenterAsync(c.CenterName, c.Definition, level);
 
             result.Add(new CenterReport
             {
@@ -141,7 +97,7 @@ public class HumanDesignReportBuilder(
 
     // ---------------- VARIABLES ----------------
 
-    private async Task<Dictionary<string, ResolvedContent>> ResolveVariablesAsync(Design design)
+    private async Task<Dictionary<string, ResolvedContent>> ResolveVariablesAsync(Design design, string level)
     {
         var result = new Dictionary<string, ResolvedContent>();
 
@@ -159,7 +115,7 @@ public class HumanDesignReportBuilder(
         {
             if (kv.Value == null) continue;
 
-            var content = await _resolver.ResolveAttributeAsync(kv.Key, kv.Value);
+            var content = await _resolver.ResolveAttributeAsync(kv.Key, kv.Value, level);
             if (content != null) result[kv.Key] = content;
         }
 
@@ -168,18 +124,30 @@ public class HumanDesignReportBuilder(
 
     // ---------------- GATES ----------------
 
-    private async Task<List<ResolvedContent>> ResolveGatesAsync(Design design)
+    private async Task<List<GateReport>> ResolveGatesAsync(Design design, string level)
     {
-        var list = new List<ResolvedContent>();
+        var list = new List<GateReport>();
 
         var gates = design.Activations
             .Select(a => a.Gate)
             .Distinct();
 
+        var gateList = design.Activations
+            .Select(a => new{a.Gate, a.Type})
+            .Distinct();
+
         foreach (var g in gates)
         {
-            var content = await _resolver.ResolveGateAsync(g);
-            if (content != null) list.Add(content);
+            var gateTypes = gateList.Where(a => a.Gate == g).ToArray();
+            var type = (gateTypes.Length > 1) ? "Both" : gateTypes[0].Type;
+            var content = await _resolver.ResolveGateAsync(g, level);
+            if (content != null) list.Add(new GateReport
+            {
+                Gate = g,
+                Type = type,
+                Title = content.Title,
+                Description = content.Description
+            });
         }
 
         return list;
@@ -187,16 +155,27 @@ public class HumanDesignReportBuilder(
 
     // ---------------- CHANNELS ----------------
 
-    private async Task<List<ResolvedContent>> ResolveChannelsAsync(Design design)
+    private async Task<List<ResolvedContent>> ResolveChannelsAsync(Design design, string level)
     {
         var list = new List<ResolvedContent>();
 
         foreach (var ch in design.Channels)
         {
-            var content = await _resolver.ResolveChannelAsync(ch.Id);
+            var content = await _resolver.ResolveChannelAsync(ch.Id, level);
             if (content != null) list.Add(content);
         }
 
         return list;
     }
+
+    private static async Task<List<VariableArrow>> ResolveArrowsAsync(Design design)
+    {
+        return
+        [
+            design.Variables.DigestionArrow,
+            design.Variables.EnvironmentArrow,
+            design.Variables.AwarenessArrow,
+            design.Variables.PerspectiveArrow
+        ];
+    }   
 }

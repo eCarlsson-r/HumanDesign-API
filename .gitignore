@@ -1,2 +1,5 @@
-/.DS_Store
-/.vscode
+.DS_Store
+.vscode
+human-design-frontend
+HumanDesign/bin
+HumanDesign/obj

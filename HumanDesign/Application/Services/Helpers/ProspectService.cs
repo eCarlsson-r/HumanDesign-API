@@ -1,9 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using HumanDesign.Infrastructure.Entities;
 using HumanDesign.Infrastructure.Data;
 using HumanDesign.Domain.Models.Requests;
 using HumanDesign.Application.Interfaces;
-using HumanDesign.Infrastructure.Entities.Charts;
 
 namespace HumanDesign.Application.Services.Helpers;
 public class ProspectService(
@@ -15,7 +13,7 @@ public class ProspectService(
     private readonly IGeoService _geo = geo;
     private readonly IHumanDesignCalculator _calculator = calculator;
 
-    public async Task<Guid> CreateProspectAsync(CreateProspectRequest req)
+    public async Task<Guid> CreateProspectAsync(CreateProspectRequest req, Guid ownerId)
     {
         var (lat, lng, tz) = await _geo.ResolveLocationAsync(req.BirthLocation);
 
@@ -25,6 +23,9 @@ public class ProspectService(
         {
             Id = Guid.NewGuid(),
             FullName = req.FullName,
+            Email = req.Email,
+            Phone = req.Phone,
+            OwnerId = ownerId,
             BirthDateLocal = req.BirthDate + req.BirthTime,
             BirthDateUtc = birthUtc,
             BirthLocation = req.BirthLocation,

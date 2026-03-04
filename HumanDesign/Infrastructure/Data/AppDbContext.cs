@@ -1,17 +1,19 @@
 using HumanDesign.Infrastructure.Entities;
 using HumanDesign.Infrastructure.Entities.Charts;
 using HumanDesign.Infrastructure.Entities.Reference;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HumanDesign.Infrastructure.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }
-
+    public new DbSet<UserEntity> Users => Set<UserEntity>();
     public DbSet<Prospect> Prospects => Set<Prospect>();
     public DbSet<Design> Designs => Set<Design>();
     public DbSet<FileEntity> Files => Set<FileEntity>();

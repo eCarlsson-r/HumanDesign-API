@@ -12,8 +12,12 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
     // CORE HELPER
     // =========================
 
-    private static string PickLevel(string? preview, string? summary, string? detail)
-        => detail ?? summary ?? preview ?? "";
+    private static string PickLevel(string level, string? preview, string? summary, string? detail) {
+        if (level == "Preview") return preview ?? "";
+        if (level == "Summary") return summary ?? "";
+        if (level == "Detail") return detail ?? "";
+        return preview ?? summary ?? detail ?? "";
+    }
 
     private static ResolvedContent Map(
         string key,
@@ -21,20 +25,19 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
         string? preview,
         string? summary,
         string? detail,
-        int? img)
+        string level)
         => new()
         {
             Key = key,
             Title = title,
-            Description = PickLevel(preview, summary, detail),
-            ImageId = img
+            Description = PickLevel(level, preview, summary, detail)
         };
 
     // =========================
     // TYPE BUNDLE
     // =========================
 
-    public async Task<TypeBundleResult> ResolveTypeBundleAsync(string typeName)
+    public async Task<TypeBundleResult> ResolveTypeBundleAsync(string typeName, string level)
     {
         var type = await _db.Types
             .FirstAsync(t => t.Name == typeName);
@@ -45,16 +48,13 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
 
         return new TypeBundleResult
         {
-            Type = Map(type.Name, type.Name, type.Preview, type.Summary, type.Detail, type.FileId),
+            Type = Map(type.Name, type.Name, type.Preview, type.Summary, type.Detail, level),
 
-            Strategy = Map("Strategy", strategy!.Title,
-                strategy.Preview, strategy.Summary, strategy.Detail, strategy.ImgNo),
+            Strategy = Map("Strategy", strategy!.Title, strategy.Preview, strategy.Summary, strategy.Detail, level),
 
-            Signature = Map("Signature", signature!.Title,
-                signature.Preview, signature.Summary, signature.Detail, signature.ImgNo),
+            Signature = Map("Signature", signature!.Title, signature.Preview, signature.Summary, signature.Detail, level),
 
-            NotSelf = Map("NotSelf", notSelf!.Title,
-                notSelf.Preview, notSelf.Summary, notSelf.Detail, notSelf.ImgNo)
+            NotSelf = Map("NotSelf", notSelf!.Title, notSelf.Preview, notSelf.Summary, notSelf.Detail, level)
         };
     }
 
@@ -62,7 +62,7 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
     // PROFILE
     // =========================
 
-    public async Task<ResolvedContent?> ResolveProfileAsync(string profile)
+    public async Task<ResolvedContent?> ResolveProfileAsync(string profile, string level)
     {
         var parts = profile.Split('/');
         var p1 = int.Parse(parts[0]);
@@ -73,83 +73,72 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
 
         if (entity == null) return null;
 
-        return Map(profile, entity.Name,
-            null, entity.Summary, entity.Detail, entity.FileId);
+        return Map(profile, entity.Name, entity.Preview, entity.Summary, entity.Detail, level);
     }
 
     // =========================
     // CROSS
     // =========================
 
-    public async Task<ResolvedContent?> ResolveCrossAsync(string crossName)
+    public async Task<ResolvedContent?> ResolveCrossAsync(string crossName, string level)
     {
         var entity = await _db.Crosses
-            .FirstOrDefaultAsync(c => c.Name == crossName);
+            .FirstOrDefaultAsync(c => "The " + c.Type + " of " + c.Name == crossName);
 
         if (entity == null) return null;
 
-        return new ResolvedContent
-        {
-            Key = crossName,
-            Title = entity.Name,
-            Description = $"{entity.Type} Cross",
-            ImageId = null
-        };
+        return Map(crossName, entity.Name, entity.Preview, entity.Summary, entity.Detail, level);
     }
 
     // =========================
     // ATTRIBUTE (Authority, Variables, Definition)
     // =========================
 
-    public async Task<ResolvedContent?> ResolveAttributeAsync(string property, string value)
+    public async Task<ResolvedContent?> ResolveAttributeAsync(string property, string value, string level)
     {
         var entity = await _db.Attributes
             .FirstOrDefaultAsync(a => a.Property == property && a.Value == value);
 
         if (entity == null) return null;
 
-        return Map(value, entity.Title,
-            entity.Preview, entity.Summary, entity.Detail, entity.ImgNo);
+        return Map(value, entity.Title, entity.Preview, entity.Summary, entity.Detail, level);
     }
 
     // =========================
     // CENTER
     // =========================
 
-    public async Task<ResolvedContent?> ResolveCenterAsync(string centerName, string definition)
+    public async Task<ResolvedContent?> ResolveCenterAsync(string centerName, string definition, string level)
     {
         var entity = await _db.Centers
             .FirstOrDefaultAsync(c => c.CenterName == centerName && c.Definition == definition);
 
         if (entity == null) return null;
 
-        return Map(entity.CenterName, entity.CenterName,
-            entity.Preview, entity.Summary, entity.Detail, entity.FileId);
+        return Map(entity.CenterName, entity.CenterName, entity.Preview, entity.Summary, entity.Detail, level);
     }
 
     // =========================
     // GATE
     // =========================
 
-    public async Task<ResolvedContent?> ResolveGateAsync(int gate)
+    public async Task<ResolvedContent?> ResolveGateAsync(int gate, string level)
     {
         var entity = await _db.Gates.FindAsync(gate);
         if (entity == null) return null;
 
-        return Map($"Gate{gate}", entity.Title,
-            entity.Preview, entity.Summary, entity.Detail, entity.FileId);
+        return Map($"Gate{gate}", entity.Title, entity.Preview, entity.Summary, entity.Detail, level);
     }
 
     // =========================
     // CHANNEL
     // =========================
 
-    public async Task<ResolvedContent?> ResolveChannelAsync(int channelId)
+    public async Task<ResolvedContent?> ResolveChannelAsync(int channelId, string level)
     {
         var entity = await _db.Channels.FindAsync(channelId);
         if (entity == null) return null;
 
-        return Map($"Channel{channelId}", entity.Name,
-            entity.Preview, entity.Summary, entity.Detail, entity.FileId);
+        return Map($"Channel{channelId}", entity.Name, entity.Preview, entity.Summary, entity.Detail, level);
     }
 }

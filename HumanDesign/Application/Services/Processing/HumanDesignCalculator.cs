@@ -6,7 +6,6 @@ using SharpAstrology.Ephemerides;
 using SharpAstrology.Interfaces;
 using SharpAstrology.Enums;
 using HumanDesign.Domain.Enums;
-using HumanDesign.Domain.Models.Diagram;
 
 namespace HumanDesign.Application.Services.Processing;
 public class HumanDesignCalculator : IHumanDesignCalculator

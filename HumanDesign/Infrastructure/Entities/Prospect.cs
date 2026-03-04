@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HumanDesign.Domain.Enums;
 using HumanDesign.Infrastructure.Entities.Charts;
 
 namespace HumanDesign.Infrastructure.Entities;
@@ -12,6 +13,11 @@ public class Prospect
 
     [Required]
     public string FullName { get; set; } = default!;
+    public string Email { get; set; } = "";
+    public string Phone { get; set; } = "";
+
+    public Guid OwnerId { get; set; }
+    public UserEntity Owner { get; set; } = null!;
 
     [Required]
     public DateTime BirthDateLocal { get; set; }
@@ -25,8 +31,8 @@ public class Prospect
 
     public string TimeZone { get; set; } = default!;
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
     // Navigation
     public Design? GeneratedDesign { get; set; }
+    public ProspectStatus Status { get; set; } = ProspectStatus.Preview;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
