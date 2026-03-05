@@ -285,11 +285,10 @@ namespace HumanDesign.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    design_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    IsLeft = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Color = table.Column<int>(type: "int", nullable: false),
-                    Tone = table.Column<int>(type: "int", nullable: false),
-                    Base = table.Column<int>(type: "int", nullable: false)
+                    is_left = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    color = table.Column<int>(type: "int", nullable: false),
+                    tone = table.Column<int>(type: "int", nullable: false),
+                    @base = table.Column<int>(name: "base", type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -545,7 +544,9 @@ namespace HumanDesign.Migrations
                     line = table.Column<int>(type: "int", nullable: false),
                     color = table.Column<int>(type: "int", nullable: false),
                     tone = table.Column<int>(type: "int", nullable: false),
-                    @base = table.Column<int>(name: "base", type: "int", nullable: false)
+                    @base = table.Column<int>(name: "base", type: "int", nullable: false),
+                    fixation = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {

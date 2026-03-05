@@ -25,6 +25,8 @@ public class PlanetaryActivation
     public int Tone { get; set; }
     [Column("base")]
     public int Base { get; set; }
+    [Column("fixation")]
+    public string FixingState { get; set; } = default!;
 
     public Design Design { get; set; } = default!;
 }

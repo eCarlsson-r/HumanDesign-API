@@ -1,3 +1,4 @@
+using HumanDesign.Domain.Models.Charts;
 using HumanDesign.Infrastructure.Entities.Charts;
 
 namespace HumanDesign.Domain.Models.Reports;
@@ -14,11 +15,11 @@ public class HumanDesignReport
     public ResolvedContent? Profile { get; set; }
     public ResolvedContent? Cross { get; set; }
     public Dictionary<string, ResolvedContent> Variables { get; set; } = [];
-    public List<VariableArrow> Arrows { get; set; } = [];
+    public Dictionary<string, VariableArrow> Arrows { get; set; } = [];
     public List<CenterReport> Centers { get; set; } = [];
     public List<GateReport> Gates { get; set; } = [];
 
-    public List<PlanetaryActivation> DesignGates { get; set; } = [];
-    public List<PlanetaryActivation> PersonalityGates { get; set; } = [];
+    public List<GateActivation> DesignGates { get; set; } = [];
+    public List<GateActivation> PersonalityGates { get; set; } = [];
     public List<ResolvedContent> Channels { get; set; } = [];
 }

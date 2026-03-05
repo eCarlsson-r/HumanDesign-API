@@ -33,6 +33,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IContentResolverService, ContentResolverService>();
 builder.Services.AddScoped<IAIContentGenerator, OpenAIContentGenerator>();
 builder.Services.AddScoped<ReferenceDataSeeder>();

@@ -9,8 +9,6 @@ public class VariableArrow
     [Key]
     [Column("id")]
     public int Id { get; set; }
-    [Column("design_id")]
-    public Guid DesignId { get; set; }
     [Column("is_left")]
     public bool IsLeft { get; set; }
     [Column("color")]
@@ -19,5 +17,4 @@ public class VariableArrow
     public int Tone { get; set; }
     [Column("base")]
     public int Base { get; set; }
-    public Design Design { get; set; } = default!;
 }

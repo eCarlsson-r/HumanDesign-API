@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HumanDesign.Domain.Models.Diagram;
 
 namespace HumanDesign.Infrastructure.Entities.Charts;
 

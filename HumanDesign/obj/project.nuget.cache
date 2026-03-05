@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "US7600YsqDw=",
+  "dgSpecHash": "b/czGqoNbbU=",
   "success": true,
   "projectFilePath": "/Users/lbert/Documents/HumanDesign/HumanDesign/HumanDesign.csproj",
   "expectedPackageFiles": [
+    "/Users/lbert/.nuget/packages/bcrypt.net-next/4.1.0/bcrypt.net-next.4.1.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/dapper/2.1.66/dapper.2.1.66.nupkg.sha512",
     "/Users/lbert/.nuget/packages/geojson.net/1.4.1/geojson.net.1.4.1.nupkg.sha512",
     "/Users/lbert/.nuget/packages/geotimezone/6.1.0/geotimezone.6.1.0.nupkg.sha512",
@@ -27,6 +28,10 @@
     "/Users/lbert/.nuget/packages/microsoft.entityframeworkcore.relational/9.0.2/microsoft.entityframeworkcore.relational.9.0.2.nupkg.sha512",
     "/Users/lbert/.nuget/packages/microsoft.extensions.dependencymodel/9.0.2/microsoft.extensions.dependencymodel.9.0.2.nupkg.sha512",
     "/Users/lbert/.nuget/packages/microsoft.extensions.fileproviders.embedded/9.0.2/microsoft.extensions.fileproviders.embedded.9.0.2.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/microsoft.identitymodel.abstractions/8.16.0/microsoft.identitymodel.abstractions.8.16.0.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.16.0/microsoft.identitymodel.jsonwebtokens.8.16.0.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/microsoft.identitymodel.logging/8.16.0/microsoft.identitymodel.logging.8.16.0.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/microsoft.identitymodel.tokens/8.16.0/microsoft.identitymodel.tokens.8.16.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512",
     "/Users/lbert/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
@@ -45,7 +50,8 @@
     "/Users/lbert/.nuget/packages/system.composition.convention/7.0.0/system.composition.convention.7.0.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/system.composition.hosting/7.0.0/system.composition.hosting.7.0.0.nupkg.sha512",
     "/Users/lbert/.nuget/packages/system.composition.runtime/7.0.0/system.composition.runtime.7.0.0.nupkg.sha512",
-    "/Users/lbert/.nuget/packages/system.composition.typedparts/7.0.0/system.composition.typedparts.7.0.0.nupkg.sha512"
+    "/Users/lbert/.nuget/packages/system.composition.typedparts/7.0.0/system.composition.typedparts.7.0.0.nupkg.sha512",
+    "/Users/lbert/.nuget/packages/system.identitymodel.tokens.jwt/8.16.0/system.identitymodel.tokens.jwt.8.16.0.nupkg.sha512"
   ],
   "logs": []
 }

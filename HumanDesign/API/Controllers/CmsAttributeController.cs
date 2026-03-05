@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using HumanDesign.Infrastructure.Data;
 
+namespace HumanDesign.API.Controllers;
 [Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/cms/attributes")]

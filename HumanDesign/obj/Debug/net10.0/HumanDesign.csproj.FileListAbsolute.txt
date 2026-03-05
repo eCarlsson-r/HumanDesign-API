@@ -201,3 +201,9 @@
 /Users/lbert/Documents/HumanDesign/HumanDesign/obj/Debug/net10.0/HumanDesign.pdb
 /Users/lbert/Documents/HumanDesign/HumanDesign/obj/Debug/net10.0/HumanDesign.genruntimeconfig.cache
 /Users/lbert/Documents/HumanDesign/HumanDesign/obj/Debug/net10.0/ref/HumanDesign.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/BCrypt.Net-Next.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Logging.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll

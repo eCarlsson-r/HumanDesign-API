@@ -3,6 +3,7 @@ using HumanDesign.Infrastructure.Data;
 using HumanDesign.Application.Interfaces;
 using HumanDesign.Domain.Models.Reports;
 using HumanDesign.Infrastructure.Entities.Charts;
+using HumanDesign.Domain.Models.Charts;
 
 namespace HumanDesign.Application.Services.Reports;
 
@@ -64,8 +65,8 @@ public class HumanDesignReportBuilder(
             Variables = await ResolveVariablesAsync(design, level),
             Arrows = await ResolveArrowsAsync(design),
             Gates = await ResolveGatesAsync(design, level),
-            DesignGates = [.. design.Activations.Where(a => a.Type == "Design")],
-            PersonalityGates = [.. design.Activations.Where(a => a.Type == "Personality")],
+            DesignGates = await ResolveGateList(design, "Design"),
+            PersonalityGates = await ResolveGateList(design, "Personality"),
             Channels = await ResolveChannelsAsync(design, level)
         };
         
@@ -168,14 +169,34 @@ public class HumanDesignReportBuilder(
         return list;
     }
 
-    private static async Task<List<VariableArrow>> ResolveArrowsAsync(Design design)
+    private static async Task<Dictionary<string, VariableArrow>> ResolveArrowsAsync(Design design)
     {
-        return
-        [
-            design.Variables.DigestionArrow,
-            design.Variables.EnvironmentArrow,
-            design.Variables.AwarenessArrow,
-            design.Variables.PerspectiveArrow
-        ];
-    }   
+        return new Dictionary<string, VariableArrow>
+        {
+            ["Digestion"] = design.Variables.DigestionArrow,
+            ["Environment"] = design.Variables.EnvironmentArrow,
+            ["Awareness"] = design.Variables.AwarenessArrow,
+            ["Perspective"] = design.Variables.PerspectiveArrow
+        };
+    }
+
+    private static async Task<List<GateActivation>> ResolveGateList(Design design, string type)
+    {
+        var list = new List<GateActivation>();
+        var gates = design.Activations.Where(a => a.Type == type).ToList();
+        foreach (var gate in gates)
+        {
+            list.Add(new GateActivation
+            {
+                Planet = gate.Planet,
+                Gate = gate.Gate,
+                Type = gate.Type,
+                Line = gate.Line,
+                FixingState = gate.FixingState
+            });
+        }
+
+        return list;
+    }
+  
 }

@@ -22,36 +22,6 @@ namespace HumanDesign.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("HumanDesign.Domain.Models.Diagram.VariableArrow", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Base")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("DesignId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("design_id");
-
-                    b.Property<bool>("IsLeft")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Tone")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("variable_arrow");
-                });
-
             modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.CenterDefinition", b =>
                 {
                     b.Property<int>("Id")
@@ -177,6 +147,11 @@ namespace HumanDesign.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("design_id");
 
+                    b.Property<string>("FixingState")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("fixation");
+
                     b.Property<int>("Gate")
                         .HasColumnType("int")
                         .HasColumnName("gate");
@@ -204,6 +179,36 @@ namespace HumanDesign.Migrations
                     b.HasIndex("DesignId");
 
                     b.ToTable("planetary_activations");
+                });
+
+            modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.VariableArrow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Base")
+                        .HasColumnType("int")
+                        .HasColumnName("base");
+
+                    b.Property<int>("Color")
+                        .HasColumnType("int")
+                        .HasColumnName("color");
+
+                    b.Property<bool>("IsLeft")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_left");
+
+                    b.Property<int>("Tone")
+                        .HasColumnType("int")
+                        .HasColumnName("tone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("variable_arrow");
                 });
 
             modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.VariableSet", b =>
@@ -953,7 +958,7 @@ namespace HumanDesign.Migrations
 
             modelBuilder.Entity("HumanDesign.Infrastructure.Entities.Charts.VariableSet", b =>
                 {
-                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "AwarenessArrow")
+                    b.HasOne("HumanDesign.Infrastructure.Entities.Charts.VariableArrow", "AwarenessArrow")
                         .WithMany()
                         .HasForeignKey("AwarenessArrowId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -965,19 +970,19 @@ namespace HumanDesign.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "DigestionArrow")
+                    b.HasOne("HumanDesign.Infrastructure.Entities.Charts.VariableArrow", "DigestionArrow")
                         .WithMany()
                         .HasForeignKey("DigestionArrowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "EnvironmentArrow")
+                    b.HasOne("HumanDesign.Infrastructure.Entities.Charts.VariableArrow", "EnvironmentArrow")
                         .WithMany()
                         .HasForeignKey("EnvironmentArrowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HumanDesign.Domain.Models.Diagram.VariableArrow", "PerspectiveArrow")
+                    b.HasOne("HumanDesign.Infrastructure.Entities.Charts.VariableArrow", "PerspectiveArrow")
                         .WithMany()
                         .HasForeignKey("PerspectiveArrowId")
                         .OnDelete(DeleteBehavior.Cascade)

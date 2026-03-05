@@ -43,7 +43,8 @@ public class HumanDesignCalculator : IHumanDesignCalculator
                 Line = activation.Line.ToNumber(),
                 Color = activation.Color.ToNumber(),
                 Tone = activation.Tone.ToNumber(),
-                Base = activation.Base.ToNumber()
+                Base = activation.Base.ToNumber(),
+                FixingState = chart.PersonalityFixation[planet].FixingState.ToString()
             });
         }
 
@@ -57,7 +58,8 @@ public class HumanDesignCalculator : IHumanDesignCalculator
                 Line = activation.Line.ToNumber(),
                 Color = activation.Color.ToNumber(),
                 Tone = activation.Tone.ToNumber(),
-                Base = activation.Base.ToNumber()
+                Base = activation.Base.ToNumber(),
+                FixingState = chart.DesignFixation[planet].FixingState.ToString()
             });
         }
 
