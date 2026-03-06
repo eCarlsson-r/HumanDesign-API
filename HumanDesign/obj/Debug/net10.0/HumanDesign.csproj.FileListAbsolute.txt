@@ -207,3 +207,6 @@
 /Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Logging.dll
 /Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll
 /Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.dll
+/Users/lbert/Documents/HumanDesign/HumanDesign/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll

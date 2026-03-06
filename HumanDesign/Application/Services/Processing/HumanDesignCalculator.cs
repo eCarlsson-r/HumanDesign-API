@@ -84,7 +84,8 @@ public class HumanDesignCalculator : IHumanDesignCalculator
 
     private static VariableSet MapVariables(HumanDesignChart chart)
     {
-        var digestion = (Digestion)chart.DesignActivation[Planets.Sun].Color.ToNumber();
+        var digestionKey = chart.DesignActivation[Planets.Sun].Color.ToString() + chart.DesignActivation[Planets.Sun].Tone.ToOrientation().ToString();
+        var digestion = Enum.Parse<Digestion>(digestionKey);
         var sense = (Sense)chart.DesignActivation[Planets.Sun].Tone.ToNumber();
         var designSense = (DesignSense)chart.DesignActivation[Planets.Earth].Tone.ToNumber();
         var motivation = (Motivation)chart.PersonalityActivation[Planets.Sun].Color.ToNumber();
@@ -93,9 +94,9 @@ public class HumanDesignCalculator : IHumanDesignCalculator
 
         return new VariableSet
         {
-            Digestion = digestion.ToString(),
-            Reasoning = sense.ToString(),
-            Cognition = designSense.ToString(),
+            Digestion = digestion.ToValue(),
+            Reasoning = designSense.ToString(),
+            Cognition = sense.ToString(),
             Motivation = motivation.ToString(),
             Perspective = perspective.ToString(),
             Environment = environment.ToString(),

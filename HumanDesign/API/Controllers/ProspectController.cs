@@ -71,6 +71,7 @@ public class ProspectController(
                 p.Id,
                 p.FullName,
                 p.Email,
+                p.Phone,
                 p.Status,
                 Owner = p.Owner.FullName,
                 p.CreatedAt

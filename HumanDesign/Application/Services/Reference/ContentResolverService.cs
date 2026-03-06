@@ -87,7 +87,7 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
 
         if (entity == null) return null;
 
-        return Map(crossName, entity.Name, entity.Preview, entity.Summary, entity.Detail, level);
+        return Map(crossName, crossName, entity.Preview, entity.Summary, entity.Detail, level);
     }
 
     // =========================
@@ -139,6 +139,6 @@ public class ContentResolverService(AppDbContext db) : IContentResolverService
         var entity = await _db.Channels.FindAsync(channelId);
         if (entity == null) return null;
 
-        return Map($"Channel{channelId}", entity.Name, entity.Preview, entity.Summary, entity.Detail, level);
+        return Map($"{entity.GateA} - {entity.GateB}", entity.Name, entity.Preview, entity.Summary, entity.Detail, level);
     }
 }

@@ -8,6 +8,9 @@ using HumanDesign.Application.Services.Processing;
 using HumanDesign.Application.Services.Helpers;
 using HumanDesign.Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,20 @@ builder.Services.AddDefaultIdentity<UserEntity>(options => options.SignIn.Requir
     .AddRoles<IdentityRole<Guid>>() // Add this line
     .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"]
+    };
+});
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -34,6 +51,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<IContentResolverService, ContentResolverService>();
 builder.Services.AddScoped<IAIContentGenerator, OpenAIContentGenerator>();
 builder.Services.AddScoped<ReferenceDataSeeder>();
@@ -54,6 +72,7 @@ using (var scope = app.Services.CreateScope())
 
 //app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

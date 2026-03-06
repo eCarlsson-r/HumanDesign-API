@@ -26,8 +26,7 @@ public class CrmUserController(
 
         if (roles.Contains("Admin"))
         {
-            query = query.Where(u =>
-                _userManager.GetRolesAsync(u).Result.Contains("Agent"));
+            query = query.Where(u => u.Role == "Agent");
         }
         else if (roles.Contains("Leader"))
         {

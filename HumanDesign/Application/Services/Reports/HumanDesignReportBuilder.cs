@@ -45,9 +45,23 @@ public class HumanDesignReportBuilder(
             .Include(d => d.Channels)
             .Include(d => d.Activations)
             .Include(d => d.Variables)
+            .Include(d => d.Variables.DigestionArrow)
+            .Include(d => d.Variables.EnvironmentArrow)
+            .Include(d => d.Variables.PerspectiveArrow)
+            .Include(d => d.Variables.AwarenessArrow)
             .Include(d => d.CenterDefinitions)
-            .FirstOrDefaultAsync(d => d.Id == id)
-            ?? throw new Exception("Design not found");
+            .FirstOrDefaultAsync(d => d.Id == id);
+
+        design ??= await _db.Designs
+            .Include(d => d.Channels)
+            .Include(d => d.Activations)
+            .Include(d => d.Variables)
+            .Include(d => d.Variables.DigestionArrow)
+            .Include(d => d.Variables.EnvironmentArrow)
+            .Include(d => d.Variables.PerspectiveArrow)
+            .Include(d => d.Variables.AwarenessArrow)
+            .Include(d => d.CenterDefinitions)
+            .FirstOrDefaultAsync(d => d.ProspectId == id) ?? throw new Exception("Design not found");
 
         var typeBundle = await _resolver.ResolveTypeBundleAsync(design.Type, level);
         var report = new HumanDesignReport
@@ -171,6 +185,7 @@ public class HumanDesignReportBuilder(
 
     private static async Task<Dictionary<string, VariableArrow>> ResolveArrowsAsync(Design design)
     {
+        Console.WriteLine("Variables : " + design.Variables);
         return new Dictionary<string, VariableArrow>
         {
             ["Digestion"] = design.Variables.DigestionArrow,
