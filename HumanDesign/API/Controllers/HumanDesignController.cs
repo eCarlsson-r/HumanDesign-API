@@ -5,14 +5,9 @@ namespace HumanDesign.API.Controllers;
 
 [ApiController]
 [Route("api/human-design")]
-public class HumanDesignController : ControllerBase
+public class HumanDesignController(IHumanDesignReportBuilder builder) : ControllerBase
 {
-    private readonly IHumanDesignReportBuilder _builder;
-
-    public HumanDesignController(IHumanDesignReportBuilder builder)
-    {
-        _builder = builder;
-    }
+    private readonly IHumanDesignReportBuilder _builder = builder;
 
     [HttpGet("{id}/preview")]
     public async Task<IActionResult> Preview(Guid id)

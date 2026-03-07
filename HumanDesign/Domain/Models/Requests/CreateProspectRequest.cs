@@ -11,4 +11,6 @@ public class CreateProspectRequest
     public TimeSpan BirthTime { get; set; }
 
     public string BirthLocation { get; set; } = default!;
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 }

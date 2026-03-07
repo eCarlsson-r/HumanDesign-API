@@ -2,20 +2,19 @@ using HumanDesign.Infrastructure.Entities;
 using HumanDesign.Infrastructure.Data;
 using HumanDesign.Domain.Models.Requests;
 using HumanDesign.Application.Interfaces;
+using GeoTimeZone;
 
 namespace HumanDesign.Application.Services.Helpers;
 public class ProspectService(
     AppDbContext db,
-    IGeoService geo,
     IHumanDesignCalculator calculator) : IProspectService
 {
     private readonly AppDbContext _db = db;
-    private readonly IGeoService _geo = geo;
     private readonly IHumanDesignCalculator _calculator = calculator;
 
     public async Task<Guid> CreateProspectAsync(CreateProspectRequest req, Guid ownerId)
     {
-        var (lat, lng, tz) = await _geo.ResolveLocationAsync(req.BirthLocation);
+        var tz = TimeZoneLookup.GetTimeZone(req.Latitude, req.Longitude).Result;
 
         var birthUtc = ConvertToUtc(req.BirthDate, req.BirthTime, tz);
 
@@ -29,8 +28,8 @@ public class ProspectService(
             BirthDateLocal = req.BirthDate + req.BirthTime,
             BirthDateUtc = birthUtc,
             BirthLocation = req.BirthLocation,
-            Latitude = lat,
-            Longitude = lng,
+            Latitude = req.Latitude,
+            Longitude = req.Longitude,
             TimeZone = tz
         };
 

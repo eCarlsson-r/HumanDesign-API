@@ -14,6 +14,8 @@ public class DashboardService(AppDbContext db)
         var userId = user.Id;
         var role = user.Role;
 
+        var start = DateTime.UtcNow.AddDays(-30);
+
         var stats = new DashboardStats
         {
             Prospects = await _db.Prospects.CountAsync(),
@@ -24,7 +26,18 @@ public class DashboardService(AppDbContext db)
 
             TodayProspects = await _db.Prospects.CountAsync(p => p.CreatedAt.Date == DateTime.UtcNow.Date),
 
-            MyProspects = await _db.Prospects.CountAsync(p => p.OwnerId == userId)
+            MyProspects = await _db.Prospects.CountAsync(p => p.OwnerId == userId),
+
+            ChartStats = await _db.Prospects
+                .Where(p => p.CreatedAt >= start)
+                .GroupBy(p => p.CreatedAt.Date)
+                .Select(g => new ChartStat
+                {
+                    Date = g.Key,
+                    Count = g.Count()
+                })
+                .OrderBy(g => g.Date)
+                .ToListAsync()
         };
 
         return stats;

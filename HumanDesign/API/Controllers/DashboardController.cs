@@ -1,5 +1,6 @@
 using HumanDesign.Application.Services.Reports;
 using HumanDesign.Domain.Models.Reports;
+using HumanDesign.Infrastructure.Data;
 using HumanDesign.Infrastructure.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,8 +11,7 @@ namespace HumanDesign.API.Controllers;
 [ApiController]
 [Route("api/dashboard")]
 public class DashboardController(DashboardService service, UserManager<UserEntity> userManager) : ControllerBase
-{
-    private readonly DashboardService _service = service;
+{    private readonly DashboardService _service = service;
     private readonly UserManager<UserEntity> _userManager = userManager;
 
     [HttpGet("stats")]

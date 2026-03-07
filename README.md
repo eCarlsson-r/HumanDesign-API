@@ -1,7 +1,5 @@
 # 🌌 Human Design Engine
 
-![Human Design Hero](./assets/hero.png)
-
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean-blue.svg)](#architecture)
@@ -60,16 +58,4 @@ The application will automatically seed the database with initial reference data
 
 ---
 
-## 📑 API Endpoints
-
-- `POST /generate_hd`: Generates a full Human Design report (PDF/JSON).
-- `GET /generate_hd_svg`: Renders a custom SVG Bodygraph based on birth data.
-- `GET /api/gates`: Retrieves reference data for the 64 gates.
-
----
-
-<p align="center">
-  <img src="./assets/logo.png" width="100" height="100" alt="Logo">
-  <br>
-  Built for the future of self-discovery.
-</p>
+> Built for the future of self-discovery.

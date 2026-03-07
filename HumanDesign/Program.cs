@@ -60,7 +60,6 @@ builder.Services.AddScoped<IReferralService, ReferralService>();
 builder.Services.AddScoped<IProspectService, ProspectService>(); 
 builder.Services.AddScoped<FileResolver>();
 builder.Services.AddScoped<IHumanDesignCalculator, HumanDesignCalculator>();
-builder.Services.AddScoped<IGeoService, GeoService>();
 builder.Services.AddScoped<IHumanDesignReportBuilder, HumanDesignReportBuilder>();
 
 var app = builder.Build();
