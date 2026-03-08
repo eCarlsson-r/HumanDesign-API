@@ -50,7 +50,7 @@ public class HumanDesignReportBuilder(
             if (user != null)
             {
                 var prospect = await _db.Prospects.FirstOrDefaultAsync(p => p.Email == user.Email);
-                if (prospect != null && prospect.Status == ProspectStatus.SummaryUnlocked)
+                if (prospect != null && (prospect.Status == ProspectStatus.SummaryUnlocked || prospect.Status == ProspectStatus.FullUnlocked))
                 {
                     return await GenerateReport(prospect.Id, "Summary");
                 }

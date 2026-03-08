@@ -1,49 +1,72 @@
 
 using HumanDesign.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using HumanDesign.Infrastructure.Data;
 using HumanDesign.Infrastructure.Entities;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace HumanDesign.Application.Services.Helpers;
-public class AuthService(AppDbContext db, IJwtService jwt) : IAuthService
+public class AuthService(AppDbContext db, UserManager<UserEntity> userManager, 
+    SignInManager<UserEntity> signInManager, IJwtService jwt) : IAuthService
 {
     private readonly AppDbContext _db = db;
     private readonly IJwtService _jwt = jwt;
+    private readonly UserManager<UserEntity> _userManager = userManager;
+    private readonly SignInManager<UserEntity> _signInManager = signInManager;
 
-    public async Task<string> RegisterAsync(string email, string password)
+    public async Task<IActionResult> RegisterAsync(string email, string password)
     {
-        if (await _db.Users.AnyAsync(u => u.Email == email))
-            throw new Exception("Email already exists");
+        if (await _userManager.FindByEmailAsync(email) != null)
+            return new BadRequestObjectResult("Email already exists");
 
-        var prospectData = await _db.Prospects.FirstOrDefaultAsync(p => p.Email == email) ?? throw new Exception("Registration can only be done for prospects.");
-        var fullName = prospectData.FullName;
-        var parentId = prospectData.OwnerId;
+        var prospect = _db.Prospects.Where(p => p.Email == email)
+            .Select(p => new { p.FullName, p.Phone, p.Status, ParentId = p.OwnerId })
+            .FirstOrDefault();
 
         var user = new UserEntity
         {
-            Id = Guid.NewGuid(),
-            FullName = fullName,
+            UserName = email,
             Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            PhoneNumber = prospect!.Phone,
             Role = "User",
-            ParentId = parentId,
-            ReferralCode = Guid.NewGuid().ToString()[..8]
+            FullName = prospect!.FullName,
+            ParentId = prospect!.ParentId,
+            ReferralCode = GenerateReferralCode()
         };
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
+        var result = await _userManager.CreateAsync(user, password);
 
-        return _jwt.GenerateToken(user);
+        if (!result.Succeeded) return new BadRequestObjectResult(result.Errors);
+
+        await _userManager.AddToRoleAsync(user, "User");
+
+        var token = _jwt.GenerateToken(user, prospect!.Status.ToString());
+        return new OkObjectResult(new { token });
     }
 
-    public async Task<string> LoginAsync(string email, string password)
+    public async Task<IActionResult> LoginAsync(string email, string password)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email)
-            ?? throw new Exception("Invalid credentials");
+        var user = await _userManager.FindByEmailAsync(email);
 
-        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-            throw new Exception("Invalid credentials");
+        if (user == null)
+            return new UnauthorizedResult();
 
-        return _jwt.GenerateToken(user);
+        var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+
+        if (!result.Succeeded)
+            return new UnauthorizedResult();
+
+        var prospectStatus = _db.Prospects.Where(p => p.Email == user.Email).Select(p => p.Status).FirstOrDefault();
+
+        var token = _jwt.GenerateToken(user, prospectStatus.ToString());
+
+        return new OkObjectResult(new { token });
+    }
+
+    public static string GenerateReferralCode(int length = 8)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        return new string([.. Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)])]);
     }
 }
