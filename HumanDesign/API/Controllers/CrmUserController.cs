@@ -1,4 +1,3 @@
-using HumanDesign.Application.Interfaces;
 using HumanDesign.Infrastructure.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +33,7 @@ public class CrmUserController(
             query = from u in _db.Users
                     join ur in _db.UserRoles on u.Id equals ur.UserId
                     join r in _db.Roles on ur.RoleId equals r.Id
-                    where r.Name == "Agent"
+                    where r.Name == "Agent" || r.Name == "Leader"
                     select u;
         }
         else if (roles.Contains("Leader"))
@@ -51,7 +50,9 @@ public class CrmUserController(
             query = query.Where(p => p.FullName.Contains(search));
         }
 
-        var result = await query
+        var total = await query.CountAsync();
+
+        var items = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(u => new
@@ -63,28 +64,19 @@ public class CrmUserController(
             })
             .ToListAsync();
 
-        return Ok(result);
+        return Ok(new { total, items });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("agents/{id}")]
     public async Task<IActionResult> GetAgent(Guid id)
     {
-        var user = await _userManager.Users
-            .Where(u => u.Id == id)
-            .Select(u => new
-            {
-                u.Id,
-                u.FullName,
-                u.Email,
-                u.ParentId,
-                u.CreatedAt
-            })
-            .FirstOrDefaultAsync();
+        Console.WriteLine("ID: " + id);
+        var user = await _userManager.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+        Console.WriteLine("User: " + user);
 
-        if (user == null)
-            return NotFound();
+        if (user == null) return NotFound();
             
-        var roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(id.ToString()));
+        var roles = await _userManager.GetRolesAsync(user);
 
         return Ok(new
         {
@@ -115,7 +107,7 @@ public class CrmUserController(
         return Ok(leaders);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("agents/{id}")]
     public async Task<IActionResult> UpdateAgent(string id, [FromBody] UpdateAgentDto dto)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -125,6 +117,7 @@ public class CrmUserController(
 
         user.FullName = dto.FullName;
         user.ParentId = dto.ParentId;
+        user.Role = dto.Role;
 
         await _userManager.UpdateAsync(user);
 

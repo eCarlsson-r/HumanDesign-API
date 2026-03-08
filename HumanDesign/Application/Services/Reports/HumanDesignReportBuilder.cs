@@ -4,6 +4,7 @@ using HumanDesign.Application.Interfaces;
 using HumanDesign.Domain.Models.Reports;
 using HumanDesign.Infrastructure.Entities.Charts;
 using HumanDesign.Domain.Models.Charts;
+using HumanDesign.Domain.Enums;
 
 namespace HumanDesign.Application.Services.Reports;
 
@@ -18,21 +19,66 @@ public class HumanDesignReportBuilder(
 
     public async Task<HumanDesignReport> BuildPreviewAsync(Guid designId)
     {
-        return await GenerateReport(designId, "Preview");
+        try
+        {
+            return await GenerateReport(designId, "Preview");
+        } catch (Exception)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == designId);
+            if (user != null)
+            {
+                var prospect = await _db.Prospects.FirstOrDefaultAsync(p => p.Email == user.Email);
+                if (prospect != null)
+                {
+                    return await GenerateReport(prospect.Id, "Preview");
+                }
+            }
+            throw;
+        }
     }
 
     // ================= SUMMARY =================
 
     public async Task<HumanDesignReport> BuildSummaryAsync(Guid designId)
     {
-        return await GenerateReport(designId, "Summary");
+        try
+        {
+            return await GenerateReport(designId, "Summary");
+        } catch (Exception)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == designId);
+            if (user != null)
+            {
+                var prospect = await _db.Prospects.FirstOrDefaultAsync(p => p.Email == user.Email);
+                if (prospect != null && prospect.Status == ProspectStatus.SummaryUnlocked)
+                {
+                    return await GenerateReport(prospect.Id, "Summary");
+                }
+            }
+            throw;
+        }
     }
 
     // ================= DETAIL =================
 
     public async Task<HumanDesignReport> BuildDetailAsync(Guid designId)
     {
-        return await GenerateReport(designId, "Detail");
+        try
+        {
+            return await GenerateReport(designId, "Detail");
+        } catch (Exception)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == designId);
+            if (user != null)
+            {
+                var prospect = await _db.Prospects.FirstOrDefaultAsync(p => p.Email == user.Email);
+                if (prospect != null && prospect.Status == ProspectStatus.FullUnlocked)
+                {
+                    return await GenerateReport(prospect.Id, "Detail");
+                }
+            }
+            throw;
+        }
     }
 
     // =====================================================

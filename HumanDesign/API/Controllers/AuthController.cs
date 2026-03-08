@@ -25,20 +25,22 @@ public class AuthController(
         if (await _userManager.FindByEmailAsync(dto.Email) != null)
             return BadRequest("Email already exists");
 
-        var prospect = _db.Prospects.Where(p => p.Email == dto.Email).Select(p => new { p.FullName, ParentId = p.OwnerId }).FirstOrDefault();
+        var prospect = _db.Prospects.Where(p => p.Email == dto.Email).Select(p => new { p.FullName, p.Phone, ParentId = p.OwnerId }).FirstOrDefault();
 
         var user = new UserEntity
         {
             UserName = dto.Email,
             Email = dto.Email,
-            FullName = prospect.FullName,
-            ParentId = prospect.ParentId
+            PhoneNumber = prospect!.Phone,
+            Role = "User",
+            FullName = prospect!.FullName,
+            ParentId = prospect!.ParentId,
+            ReferralCode = GenerateReferralCode()
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
 
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
         await _userManager.AddToRoleAsync(user, "User");
 
@@ -78,5 +80,12 @@ public class AuthController(
             user.FullName,
             user.Email
         });
+    }
+
+    public static string GenerateReferralCode(int length = 8)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        return new string([.. Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)])]);
     }
 }

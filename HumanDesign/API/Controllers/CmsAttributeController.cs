@@ -16,91 +16,112 @@ public class AttributeCmsController(AppDbContext db) : ControllerBase
     public async Task<AttributeEntity?> Get(int id) => await _db.Attributes.FindAsync(id);
 
     [HttpGet("attributes")]
-    public async Task<List<AttributeEntity>> GetAll(
+    public async Task<IActionResult> GetAll(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Attributes.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
 
     [HttpGet("type/{id}")]
     public async Task<TypeEntity?> GetType(int id) => await _db.Types.FindAsync(id);
 
     [HttpGet("type")]
-    public async Task<List<TypeEntity>> GetAllTypes(
+    public async Task<IActionResult> GetAllTypes(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Types.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
     
     [HttpGet("profile/{id}")]
     public async Task<ProfileEntity?> GetProfile(int id) => await _db.Profiles.FindAsync(id);
     
     [HttpGet("profile")]
-    public async Task<List<ProfileEntity>> GetAllProfiles(
+    public async Task<IActionResult> GetAllProfiles(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Profiles.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
 
     [HttpGet("gate/{id}")]
     public async Task<GateEntity?> GetGate(int id) => await _db.Gates.FindAsync(id);
 
     [HttpGet("gate")]
-    public async Task<List<GateEntity>> GetAllGates(
+    public async Task<IActionResult> GetAllGates(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Gates.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
 
     [HttpGet("channel/{id}")]
     public async Task<ChannelEntity?> GetChannel(int id) => await _db.Channels.FindAsync(id);
 
     [HttpGet("channel")]
-    public async Task<List<ChannelEntity>> GetAllChannels(
+    public async Task<IActionResult> GetAllChannels(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Channels.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
 
     [HttpGet("center/{id}")]
     public async Task<CenterEntity?> GetCenter(int id) => await _db.Centers.FindAsync(id);
 
     [HttpGet("center")]
-    public async Task<List<CenterEntity>> GetAllCenters(
+    public async Task<IActionResult> GetAllCenters(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Centers.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
 
     [HttpGet("cross/{id}")]
     public async Task<CrossEntity?> GetCross(int id) => await _db.Crosses.FindAsync(id);
 
     [HttpGet("cross")]
-    public async Task<List<CrossEntity>> GetAllCross(
+    public async Task<IActionResult> GetAllCross(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
         var query = _db.Crosses.AsQueryable();
 
-        return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var total = await query.CountAsync();
+
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(new { total, items });
     }
 
     // Update content only (not property/value)

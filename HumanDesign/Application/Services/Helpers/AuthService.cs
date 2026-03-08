@@ -5,16 +5,10 @@ using HumanDesign.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HumanDesign.Application.Services.Helpers;
-public class AuthService : IAuthService
+public class AuthService(AppDbContext db, IJwtService jwt) : IAuthService
 {
-    private readonly AppDbContext _db;
-    private readonly IJwtService _jwt;
-
-    public AuthService(AppDbContext db, IJwtService jwt)
-    {
-        _db = db;
-        _jwt = jwt;
-    }
+    private readonly AppDbContext _db = db;
+    private readonly IJwtService _jwt = jwt;
 
     public async Task<string> RegisterAsync(string email, string password)
     {
