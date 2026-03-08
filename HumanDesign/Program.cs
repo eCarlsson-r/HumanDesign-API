@@ -74,6 +74,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 using (var scope = app.Services.CreateScope())
 {
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
     await UserDataSeeder.SeedAsync(scope.ServiceProvider);
     await scope.ServiceProvider.GetRequiredService<ReferenceDataSeeder>().SeedAsync();
 }
