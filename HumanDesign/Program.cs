@@ -21,7 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 // Register DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<UserEntity>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole<Guid>>() // Add this line
@@ -41,12 +41,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var allowedOrigins = builder.Configuration["Cors:AllowedOrigins"];
+Console.WriteLine(allowedOrigins);
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(allowedOrigins!).AllowAnyHeader().AllowAnyMethod();
+        if (allowedOrigins is not null) policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
     });
 });
 builder.Services.AddHttpClient();
